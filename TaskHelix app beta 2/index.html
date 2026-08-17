@@ -46,8 +46,8 @@
         <button class="icon-btn" id="btnEmergencyTrigger" aria-label="Emergency Procrastination Reset" onclick="openEmergencySheet()">
           🚨
         </button>
-        <button class="icon-btn" id="btnDataSync" aria-label="Backup & Data Sync" onclick="openDataSheet()">
-          💾
+        <button class="icon-btn" id="btnSettingsTrigger" aria-label="App Settings" onclick="openSettingsSheet()">
+          ⚙️
         </button>
       </div>
     </header>
@@ -475,29 +475,83 @@
     </div>
 
 
-    <!-- 5. Native Slide-Up Bottom Sheet: Data Backup & Sync -->
-    <div class="sheet-backdrop" id="dataSheetBackdrop" onclick="closeDataSheet()"></div>
-    <div class="mobile-sheet" id="dataSheet">
+    <!-- 5. Native Slide-Up Bottom Sheet: Settings & Preferences -->
+    <div class="sheet-backdrop" id="settingsSheetBackdrop" onclick="closeSettingsSheet()"></div>
+    <div class="mobile-sheet" id="settingsSheet">
       <div class="sheet-handle-bar"></div>
       <div class="card-top-row">
-        <span class="card-title-sm">💾 Local Data & Sync</span>
-        <button class="btn-mobile btn-apple-secondary btn-apple-sm" onclick="closeDataSheet()">✕</button>
+        <span class="card-title-sm">⚙️ App Settings</span>
+        <button class="btn-mobile btn-apple-secondary btn-apple-sm" onclick="closeSettingsSheet()">✕</button>
       </div>
 
-      <p style="font-size:0.8rem; color:var(--text-platinum); margin-bottom:0.75rem;">
-        All state is saved locally on this device. Export a backup JSON or restore past progress anytime.
-      </p>
-
-      <div class="form-stack">
-        <button class="btn-mobile btn-apple-primary" onclick="exportDataBackup()">
-          📥 Export Backup File (.json)
+      <!-- Appearance / Theme -->
+      <div class="settings-section-title">Appearance & Theme</div>
+      <div class="settings-option-grid" role="radiogroup" aria-label="Theme Selection">
+        <button type="button" class="settings-pill-btn active" id="btnThemeOled" onclick="setAppTheme('oled-black')">
+          OLED Black
         </button>
-        <label class="btn-mobile btn-apple-secondary" style="cursor:pointer; text-align:center;">
-          📤 Restore from Backup
-          <input type="file" id="inputImportFile" accept=".json" style="display:none;" onchange="importDataBackup(event)">
-        </label>
-        <button class="btn-mobile btn-apple-emergency" onclick="resetAllDataConfirm()">
-          ⚠️ Wipe & Reset All Data
+        <button type="button" class="settings-pill-btn" id="btnThemeSpace" onclick="setAppTheme('space-gray')">
+          Space Gray
+        </button>
+        <button type="button" class="settings-pill-btn" id="btnThemeLight" onclick="setAppTheme('studio-light')">
+          Studio Light
+        </button>
+      </div>
+
+      <!-- Typography -->
+      <div class="settings-section-title">Typography & Font</div>
+      <div class="settings-option-grid" role="radiogroup" aria-label="Font Selection">
+        <button type="button" class="settings-pill-btn active" id="btnFontSf" onclick="setAppFont('sf-pro')">
+          SF Pro
+        </button>
+        <button type="button" class="settings-pill-btn" id="btnFontInter" onclick="setAppFont('inter')">
+          Inter
+        </button>
+        <button type="button" class="settings-pill-btn" id="btnFontMono" onclick="setAppFont('jetbrains-mono')">
+          Tech Mono
+        </button>
+      </div>
+
+      <!-- Audio & Haptics Feedback -->
+      <div class="settings-section-title">Audio & Sound FX</div>
+      <div class="settings-toggle-row">
+        <div>
+          <div class="settings-toggle-label">Harmonic Tones & Chimes</div>
+          <div class="settings-toggle-desc">Plays Web Audio feedback on checkoffs and timer intervals</div>
+        </div>
+        <input type="checkbox" id="toggleSoundEffects" checked onchange="toggleSoundFx(this.checked)" style="width:20px; height:20px; accent-color:var(--color-apple-blue);">
+      </div>
+
+      <div class="settings-toggle-row">
+        <div>
+          <div class="settings-toggle-label">Wim Hof Breath Cadence</div>
+          <div class="settings-toggle-desc">Pacing speed for visual breath orb</div>
+        </div>
+        <select id="selectWimHofCadence" class="form-input-mobile" style="width:auto; padding:0.35rem 0.65rem; font-size:0.76rem;" onchange="setWimHofPace(this.value)">
+          <option value="1600">Normal (1.6s)</option>
+          <option value="1300">Fast (1.3s)</option>
+          <option value="2000">Slow (2.0s)</option>
+        </select>
+      </div>
+
+      <!-- Data & Persistence Status -->
+      <div class="settings-section-title">Data & Persistence</div>
+      <div style="background:var(--bg-complication); padding:0.75rem; border-radius:14px; margin-bottom:0.75rem; border:1px solid var(--border-subtle);">
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.78rem;">
+          <span style="color:var(--text-frost); font-weight:700;">Storage Status:</span>
+          <span style="color:var(--color-emerald-active); font-weight:700;">🟢 Auto-Saved Locally</span>
+        </div>
+        <p style="font-size:0.72rem; color:var(--text-platinum); margin-top:0.35rem;">
+          All shift logs, ladder conquests, and roadmaps persist automatically to device memory.
+        </p>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.5rem;">
+        <button class="btn-mobile btn-apple-secondary btn-apple-sm" onclick="clearTodayAuditConfirm()">
+          Clear Today's Audits
+        </button>
+        <button class="btn-mobile btn-apple-emergency btn-apple-sm" onclick="resetAllDataConfirm()">
+          Factory Reset
         </button>
       </div>
     </div>

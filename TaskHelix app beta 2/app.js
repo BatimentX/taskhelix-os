@@ -16,6 +16,12 @@ const defaultState = {
   completedLadders: {},     // { [rungNum]: boolean }
   trackerLogs: [],          // [ { id, timestamp, action, duration, moodBefore, moodAfter, delta, notes } ]
   scheduleAudits: {},       // { [dateStr]: { [blockId]: { status: 'followed'|'deviated', activity, driver, notes } } }
+  settings: {
+    theme: 'oled-black',
+    font: 'sf-pro',
+    soundEnabled: true,
+    wimHofPace: 1600
+  }
 };
 
 let AppState = loadState();
@@ -68,6 +74,7 @@ const AudioSynthesizer = {
   },
 
   playTone(freq = 440, duration = 0.4, type = 'sine') {
+    if (AppState.settings && AppState.settings.soundEnabled === false) return;
     this.init();
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
@@ -467,7 +474,7 @@ const WimHofEngine = {
         }
       }
       isInhale = !isInhale;
-    }, 1600);
+    }, parseInt(AppState.settings?.wimHofPace || '1600', 10));
   },
 
   startRetention() {
@@ -978,41 +985,54 @@ function closeEmergencySheet() {
   document.getElementById('emergencySheet').classList.remove('open');
 }
 
-function openDataSheet() {
-  document.getElementById('dataSheetBackdrop').classList.add('open');
-  document.getElementById('dataSheet').classList.add('open');
+function openSettingsSheet() {
+  syncSettingsUI();
+  document.getElementById('settingsSheetBackdrop').classList.add('open');
+  document.getElementById('settingsSheet').classList.add('open');
 }
 
-function closeDataSheet() {
-  document.getElementById('dataSheetBackdrop').classList.remove('open');
-  document.getElementById('dataSheet').classList.remove('open');
+function closeSettingsSheet() {
+  document.getElementById('settingsSheetBackdrop').classList.remove('open');
+  document.getElementById('settingsSheet').classList.remove('open');
 }
 
-function exportDataBackup() {
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(AppState, null, 2));
-  const downloadAnchor = document.createElement('a');
-  downloadAnchor.setAttribute("href", dataStr);
-  downloadAnchor.setAttribute("download", `taskhelix_backup_${getTodayDateString()}.json`);
-  document.body.appendChild(downloadAnchor);
-  downloadAnchor.click();
-  downloadAnchor.remove();
+function setAppTheme(theme) {
+  if (!AppState.settings) AppState.settings = {};
+  AppState.settings.theme = theme;
+  saveState();
+  applySettings();
 }
 
-function importDataBackup(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(evt) {
-    try {
-      const imported = JSON.parse(evt.target.result);
-      AppState = { ...defaultState, ...imported };
+function setAppFont(font) {
+  if (!AppState.settings) AppState.settings = {};
+  AppState.settings.font = font;
+  saveState();
+  applySettings();
+}
+
+function toggleSoundFx(enabled) {
+  if (!AppState.settings) AppState.settings = {};
+  AppState.settings.soundEnabled = enabled;
+  saveState();
+}
+
+function setWimHofPace(pace) {
+  if (!AppState.settings) AppState.settings = {};
+  AppState.settings.wimHofPace = parseInt(pace, 10);
+  saveState();
+}
+
+function clearTodayAuditConfirm() {
+  const today = getTodayDateString();
+  if (confirm(`Clear all audit records for today (${today})?`)) {
+    if (AppState.scheduleAudits[today]) {
+      delete AppState.scheduleAudits[today];
       saveState();
-      location.reload();
-    } catch (err) {
-      alert('Invalid backup JSON file.');
+      renderAuditBlocks();
+      renderShiftRibbon(lastActiveBlockId);
+      closeSettingsSheet();
     }
-  };
-  reader.readAsText(file);
+  }
 }
 
 function resetAllDataConfirm() {
@@ -1022,10 +1042,53 @@ function resetAllDataConfirm() {
   }
 }
 
+function applySettings() {
+  const settings = AppState.settings || defaultState.settings;
+
+  // Apply Theme
+  document.documentElement.setAttribute('data-theme', settings.theme || 'oled-black');
+
+  // Apply Font
+  document.documentElement.setAttribute('data-font', settings.font || 'sf-pro');
+
+  syncSettingsUI();
+}
+
+function syncSettingsUI() {
+  const settings = AppState.settings || defaultState.settings;
+
+  // Theme Buttons
+  const btnOled = document.getElementById('btnThemeOled');
+  const btnSpace = document.getElementById('btnThemeSpace');
+  const btnLight = document.getElementById('btnThemeLight');
+
+  if (btnOled) btnOled.className = `settings-pill-btn ${settings.theme === 'oled-black' ? 'active' : ''}`;
+  if (btnSpace) btnSpace.className = `settings-pill-btn ${settings.theme === 'space-gray' ? 'active' : ''}`;
+  if (btnLight) btnLight.className = `settings-pill-btn ${settings.theme === 'studio-light' ? 'active' : ''}`;
+
+  // Font Buttons
+  const btnSf = document.getElementById('btnFontSf');
+  const btnInter = document.getElementById('btnFontInter');
+  const btnMono = document.getElementById('btnFontMono');
+
+  if (btnSf) btnSf.className = `settings-pill-btn ${settings.font === 'sf-pro' ? 'active' : ''}`;
+  if (btnInter) btnInter.className = `settings-pill-btn ${settings.font === 'inter' ? 'active' : ''}`;
+  if (btnMono) btnMono.className = `settings-pill-btn ${settings.font === 'jetbrains-mono' ? 'active' : ''}`;
+
+  // Sound Toggle
+  const toggleSound = document.getElementById('toggleSoundEffects');
+  if (toggleSound) toggleSound.checked = settings.soundEnabled !== false;
+
+  // Cadence Selector
+  const selectCadence = document.getElementById('selectWimHofCadence');
+  if (selectCadence) selectCadence.value = String(settings.wimHofPace || 1600);
+}
+
 // --------------------------------------------------------------------------
 // 13. App Initialization
 // --------------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
+  applySettings();
   renderRoadmap();
   renderExposureLadder();
   renderTrackerLogs();
@@ -1041,3 +1104,4 @@ document.addEventListener('DOMContentLoaded', () => {
   // Update chronometer every second
   setInterval(updateLiveChronometer, 1000);
 });
+

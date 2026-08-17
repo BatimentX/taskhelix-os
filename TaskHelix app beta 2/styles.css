@@ -4,7 +4,7 @@
    ========================================================================== */
 
 :root {
-  /* Surfaces & Obsidian Depth */
+  /* Surfaces & Obsidian Depth (Default OLED Black) */
   --bg-app: #000000;
   --bg-card: #111112;
   --bg-card-subtle: #18181b;
@@ -48,6 +48,127 @@
   /* Transitions */
   --trans-fast: 0.18s cubic-bezier(0.16, 1, 0.3, 1);
   --trans-spring: 0.36s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Theme: Deep Space Gray */
+[data-theme="space-gray"] {
+  --bg-app: #121214;
+  --bg-card: #1c1c1f;
+  --bg-card-subtle: #242428;
+  --bg-complication: #2c2c30;
+  --bg-elevated: #36363c;
+  --border-subtle: rgba(255, 255, 255, 0.10);
+  --border-medium: rgba(255, 255, 255, 0.18);
+}
+
+/* Theme: Studio Light (Crisp Apple Frost) */
+[data-theme="studio-light"] {
+  --bg-app: #f5f5f7;
+  --bg-card: #ffffff;
+  --bg-card-subtle: #eaeaea;
+  --bg-complication: #e1e1e6;
+  --bg-elevated: #d6d6dc;
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.14);
+  --border-active: rgba(0, 0, 0, 0.28);
+  --text-white: #111112;
+  --text-frost: #1d1d1f;
+  --text-platinum: #6e6e73;
+  --text-charcoal: #a1a1a6;
+}
+
+[data-theme="studio-light"] .mobile-header {
+  background-color: rgba(245, 245, 247, 0.88);
+}
+
+[data-theme="studio-light"] .mobile-bottom-dock {
+  background-color: rgba(255, 255, 255, 0.92);
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="studio-light"] .dock-tab-btn.active {
+  background-color: rgba(0, 0, 0, 0.08);
+  color: #000000;
+}
+
+[data-theme="studio-light"] .dock-tab-btn {
+  color: #6e6e73;
+}
+
+[data-theme="studio-light"] .ring-circle-bg {
+  stroke: #e1e1e6;
+}
+
+/* Font Customization */
+[data-font="sf-pro"] {
+  --font-system: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
+}
+
+[data-font="inter"] {
+  --font-system: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+[data-font="jetbrains-mono"] {
+  --font-system: "JetBrains Mono", monospace;
+}
+
+/* Settings Card Component Styles */
+.settings-section-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-platinum);
+  margin-bottom: 0.45rem;
+  margin-top: 0.85rem;
+}
+
+.settings-option-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.45rem;
+  margin-bottom: 0.85rem;
+}
+
+.settings-pill-btn {
+  background-color: var(--bg-complication);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  color: var(--text-platinum);
+  font-family: var(--font-system);
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 0.5rem 0.35rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+
+.settings-pill-btn.active {
+  background-color: var(--color-apple-blue);
+  color: #ffffff;
+  border-color: var(--color-apple-blue);
+  box-shadow: 0 2px 8px var(--color-apple-blue-glow);
+}
+
+.settings-toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.settings-toggle-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-white);
+}
+
+.settings-toggle-desc {
+  font-size: 0.72rem;
+  color: var(--text-platinum);
 }
 
 /* --------------------------------------------------------------------------
