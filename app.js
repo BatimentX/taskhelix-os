@@ -1360,7 +1360,7 @@ function renderTrackerTable() {
         </td>
         <td style="color:var(--color-platinum); font-size:0.8rem;">
           ${item.notes || '-'}
-          <button class="btn btn-sm" style="color:var(--color-crimson-alert); margin-left:0.5rem;" onclick="deleteLogEntry(${item.id})">×</button>
+          <button class="btn btn-sm" aria-label="Delete behavioral action entry" style="color:var(--color-crimson-alert); margin-left:0.5rem;" onclick="deleteLogEntry(${item.id})">×</button>
         </td>
       </tr>
     `;

@@ -401,12 +401,12 @@
         <form class="tracker-form" onsubmit="logBehaviorAction(event)">
           <div class="form-group" style="grid-column: span 2;">
             <label for="trackerAction">Exact Behavioral Action</label>
-            <input type="text" id="trackerAction" class="form-control" placeholder="e.g. Sent 2 Upwork proposals with Loom" required>
+            <input type="text" id="trackerAction" aria-label="Exact Behavioral Action Description" class="form-control" placeholder="e.g. Sent 2 Upwork proposals with Loom" required>
           </div>
 
           <div class="form-group">
             <label for="trackerDuration">Duration (Mins)</label>
-            <input type="number" id="trackerDuration" class="form-control mono" value="25" min="1" max="300">
+            <input type="number" id="trackerDuration" aria-label="Duration in minutes" class="form-control mono" value="25" min="1" max="300">
           </div>
 
           <div class="form-group">
@@ -427,7 +427,7 @@
 
           <div class="form-group" style="grid-column: span 4;">
             <label for="trackerNotes">Resistance / Victory Notes</label>
-            <input type="text" id="trackerNotes" class="form-control" placeholder="e.g. Felt urge to check email; pushed through.">
+            <input type="text" id="trackerNotes" aria-label="Resistance or Victory Notes" class="form-control" placeholder="e.g. Felt urge to check email; pushed through.">
           </div>
 
           <button type="submit" class="btn btn-primary" style="height:38px;">
@@ -538,7 +538,7 @@
         <label for="deviationNotesInput" style="font-size:0.8rem; font-weight:600; color:var(--color-frost-white); display:block; margin-bottom:0.35rem;">
           3. Optional Details / Specific Thought Pattern:
         </label>
-        <input type="text" id="deviationNotesInput" class="form-control" style="width:100%;" placeholder="e.g. Felt anxious; opened YouTube.">
+        <input type="text" id="deviationNotesInput" aria-label="Optional details or thought pattern for schedule deviation" class="form-control" style="width:100%;" placeholder="e.g. Felt anxious; opened YouTube.">
       </div>
 
       <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
