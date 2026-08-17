@@ -1038,7 +1038,7 @@ function renderRoadmap() {
           <div class="week-phase-pill">Phase ${w.phase}: ${w.phaseTitle}</div>
         </div>
       </div>
-      <div style="display:flex; align-items:center; gap: 0.75rem;">
+      <div class="week-header-right">
         <span class="discomfort-tag mono">
           Goal: ${w.successMetrics.split(';')[0]}
         </span>
@@ -1156,7 +1156,7 @@ function renderExposureLadder() {
           <p>${item.task}</p>
         </div>
       </div>
-      <div style="display:flex; align-items:center; gap: 0.75rem;">
+      <div class="ladder-item-actions">
         <span class="discomfort-tag mono">Discomfort: ${item.discomfortScore}</span>
         <button class="btn btn-sm ${isCompleted ? 'btn-primary' : 'btn-secondary'}" onclick="toggleLadder(${item.rung})">
           ${isCompleted ? '✓ Conquered' : 'Mark Done'}

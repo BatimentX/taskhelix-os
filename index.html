@@ -42,9 +42,7 @@
       <!-- Chronometer Pill Complication -->
       <div class="chrono-live-bar">
         <span class="live-time-val mono" id="liveClock">15:20:00</span>
-        
-        <div style="height:14px; width:1px; background-color:var(--color-smoke);"></div>
-
+        <div style="height:14px; width:1px; background-color:var(--color-smoke); flex-shrink:0;"></div>
         <div class="active-block-pill">
           <span class="pulse-dot"></span>
           <span class="block-pill-title" id="activeBlockName">Deep Work 1</span>
@@ -81,82 +79,84 @@
   <!-- Main Content Showcase Stage -->
   <main class="main-wrapper">
 
-    <!-- Top Telemetry Stage: Apple Activity Rings + Complication Widgets -->
-    <section class="telemetry-stage-wrapper">
-      
-      <!-- Apple Activity Rings Widget -->
-      <div class="activity-rings-card">
-        <div class="rings-svg-container">
-          <svg width="104" height="104" viewBox="0 0 104 104">
-            <!-- Outer Ring: Deep Work (Green) -->
-            <circle class="ring-bg ring-emerald-bg" cx="52" cy="52" r="44"></circle>
-            <circle class="ring-fill ring-emerald-fill" id="ringDeepWork" cx="52" cy="52" r="44" stroke-dasharray="276.46" stroke-dashoffset="276.46"></circle>
-            
-            <!-- Middle Ring: Adherence (Blue) -->
-            <circle class="ring-bg ring-blue-bg" cx="52" cy="52" r="32"></circle>
-            <circle class="ring-fill ring-blue-fill" id="ringAdherence" cx="52" cy="52" r="32" stroke-dasharray="201.06" stroke-dashoffset="201.06"></circle>
-            
-            <!-- Inner Ring: Avoidance (Orange) -->
-            <circle class="ring-bg ring-orange-bg" cx="52" cy="52" r="20"></circle>
-            <circle class="ring-fill ring-orange-fill" id="ringAvoidance" cx="52" cy="52" r="20" stroke-dasharray="125.66" stroke-dashoffset="125.66"></circle>
-          </svg>
-        </div>
-
-        <div class="rings-legend">
-          <div class="ring-legend-item">
-            <span class="ring-legend-dot" style="background-color:var(--color-emerald-active);"></span>
-            <span>Deep Work: <strong id="legendDeepWork" class="mono" style="color:var(--color-frost-white);">0.0h</strong></span>
-          </div>
-          <div class="ring-legend-item">
-            <span class="ring-legend-dot" style="background-color:var(--color-halo-blue);"></span>
-            <span>Adherence: <strong id="legendAdherence" class="mono" style="color:var(--color-frost-white);">0%</strong></span>
-          </div>
-          <div class="ring-legend-item">
-            <span class="ring-legend-dot" style="background-color:var(--color-signal-orange);"></span>
-            <span>Avoidance: <strong id="legendAvoidance" class="mono" style="color:var(--color-frost-white);">0.0h</strong></span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Complication Widgets Grid -->
-      <div class="grid-4" style="flex:1;">
-        <div class="metric-box">
-          <span class="metric-label">Deep Work</span>
-          <span class="metric-val emerald mono" id="statDeepWorkHours">0.0 hrs</span>
-        </div>
-        <div class="metric-box">
-          <span class="metric-label">Adherence</span>
-          <span class="metric-val azure mono" id="statTodayAdherence">--%</span>
-        </div>
-        <div class="metric-box">
-          <span class="metric-label">Avoidance</span>
-          <span class="metric-val crimson mono" id="statAvoidanceHours">0.0 hrs</span>
-        </div>
-        <div class="metric-box">
-          <span class="metric-label">Exposures</span>
-          <span class="metric-val amber mono" id="statLaddersConquered">0 / 10</span>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- 24-Hour Shift Ribbon (Visual Timeline) -->
-    <section class="shift-ribbon-card">
-      <div class="shift-ribbon-header">
-        <div style="display:flex; align-items:center; gap:0.5rem;">
-          <span class="category-eyebrow emerald" style="margin-bottom:0;">Live Shift Ribbon</span>
-          <span style="font-size:0.75rem; color:var(--color-platinum);">· 24-Hour Circadian Flow</span>
-        </div>
-        <span class="mono" style="font-size:0.75rem; color:var(--color-halo-blue);" id="ribbonActiveBlockTag">Live Tracking</span>
-      </div>
-
-      <div class="ribbon-scroll-track" id="shiftRibbonTrack">
-        <!-- Injected dynamically via JS -->
-      </div>
-    </section>
-
     <!-- TAB 1: EXECUTION COCKPIT -->
     <section id="tab_cockpit" class="tab-content active">
+
+      <!-- Top Telemetry Stage: Apple Activity Rings + Complication Widgets -->
+      <div class="telemetry-stage-wrapper">
+        
+        <!-- Apple Activity Rings Widget -->
+        <div class="activity-rings-card">
+          <div class="rings-svg-container">
+            <svg width="96" height="96" viewBox="0 0 104 104">
+              <!-- Outer Ring: Deep Work (Green) -->
+              <circle class="ring-bg ring-emerald-bg" cx="52" cy="52" r="44"></circle>
+              <circle class="ring-fill ring-emerald-fill" id="ringDeepWork" cx="52" cy="52" r="44" stroke-dasharray="276.46" stroke-dashoffset="276.46"></circle>
+              
+              <!-- Middle Ring: Adherence (Blue) -->
+              <circle class="ring-bg ring-blue-bg" cx="52" cy="52" r="32"></circle>
+              <circle class="ring-fill ring-blue-fill" id="ringAdherence" cx="52" cy="52" r="32" stroke-dasharray="201.06" stroke-dashoffset="201.06"></circle>
+              
+              <!-- Inner Ring: Avoidance (Orange) -->
+              <circle class="ring-bg ring-orange-bg" cx="52" cy="52" r="20"></circle>
+              <circle class="ring-fill ring-orange-fill" id="ringAvoidance" cx="52" cy="52" r="20" stroke-dasharray="125.66" stroke-dashoffset="125.66"></circle>
+            </svg>
+          </div>
+
+          <div class="rings-legend">
+            <div class="ring-legend-item">
+              <span class="ring-legend-dot" style="background-color:var(--color-emerald-active);"></span>
+              <span>Deep Work: <strong id="legendDeepWork" class="mono" style="color:var(--color-frost-white);">0.0h / 2.7h</strong></span>
+            </div>
+            <div class="ring-legend-item">
+              <span class="ring-legend-dot" style="background-color:var(--color-halo-blue);"></span>
+              <span>Adherence: <strong id="legendAdherence" class="mono" style="color:var(--color-frost-white);">0%</strong></span>
+            </div>
+            <div class="ring-legend-item">
+              <span class="ring-legend-dot" style="background-color:var(--color-signal-orange);"></span>
+              <span>Avoidance: <strong id="legendAvoidance" class="mono" style="color:var(--color-frost-white);">0.0h</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Complication Widgets Grid -->
+        <div class="grid-4" style="flex:1;">
+          <div class="metric-box">
+            <span class="metric-label">Deep Work</span>
+            <span class="metric-val emerald mono" id="statDeepWorkHours">0.0 hrs</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-label">Adherence</span>
+            <span class="metric-val azure mono" id="statTodayAdherence">--%</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-label">Avoidance</span>
+            <span class="metric-val crimson mono" id="statAvoidanceHours">0.0 hrs</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-label">Exposures</span>
+            <span class="metric-val amber mono" id="statLaddersConquered">0 / 10</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 24-Hour Shift Ribbon (Visual Timeline) -->
+      <div class="shift-ribbon-card">
+        <div class="shift-ribbon-header">
+          <div style="display:flex; align-items:center; gap:0.4rem;">
+            <span class="category-eyebrow emerald" style="margin-bottom:0;">Live Shift Ribbon</span>
+            <span style="font-size:0.75rem; color:var(--color-platinum);">· 24h Circadian Flow</span>
+          </div>
+          <span class="mono" style="font-size:0.72rem; color:var(--color-halo-blue);" id="ribbonActiveBlockTag">Live Tracking</span>
+        </div>
+
+        <div class="ribbon-scroll-track" id="shiftRibbonTrack">
+          <!-- Injected dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- Cockpit Main Showcase Grid -->
       <div class="grid-cockpit">
         
         <!-- Left: Active Focus Hero Stage -->
@@ -180,7 +180,7 @@
             <div id="heroProgressBar" class="hero-progress-fill" style="width:0%;"></div>
           </div>
 
-          <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
+          <div class="hero-btn-cluster">
             <button class="btn btn-primary" onclick="switchTab('schedule')">
               🕒 Audit Shift Block
             </button>
@@ -197,25 +197,25 @@
         </div>
 
         <!-- Right: Audio Synthesizer & Laws -->
-        <div style="display:flex; flex-direction:column; gap:1.25rem;">
+        <div style="display:flex; flex-direction:column; gap:1.15rem;">
           
           <!-- Focus Audio Vitrine Card -->
           <div class="card" style="background-color:var(--color-carbon); border-color:rgba(0, 113, 227, 0.3);">
-            <div class="card-header" style="margin-bottom:0.6rem; padding-bottom:0.6rem;">
-              <span class="card-title" style="color:var(--color-halo-blue); font-size:0.95rem;">
+            <div class="card-header" style="margin-bottom:0.5rem; padding-bottom:0.5rem;">
+              <span class="card-title" style="color:var(--color-halo-blue); font-size:0.92rem;">
                 🎧 Ambient Focus Audio
               </span>
               <span class="mono" id="focusAudioStatus" style="font-size:0.75rem; color:var(--color-platinum);">Paused</span>
             </div>
-            <p style="font-size:0.85rem; margin-bottom:0.9rem;">
+            <p style="font-size:0.82rem; margin-bottom:0.85rem;">
               Continuous synthesized brown noise. Eliminates opening YouTube/Spotify for focus audio.
             </p>
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:0.85rem;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:0.75rem;">
               <button class="btn btn-primary btn-sm" id="focusAudioToggleBtn">
                 ▶ Start Noise
               </button>
-              <div style="display:flex; align-items:center; gap:0.5rem; flex:1; max-width:140px;">
-                <label for="focusAudioVolume" style="font-size:0.75rem; color:var(--color-platinum);">Vol:</label>
+              <div style="display:flex; align-items:center; gap:0.4rem; flex:1; max-width:130px;">
+                <label for="focusAudioVolume" style="font-size:0.72rem; color:var(--color-platinum);">Vol:</label>
                 <input type="range" id="focusAudioVolume" min="0" max="1" step="0.05" value="0.5" style="width:100%;">
               </div>
             </div>
@@ -223,17 +223,17 @@
 
           <!-- Mindset Laws Card -->
           <div class="card">
-            <div class="card-header" style="margin-bottom:0.6rem; padding-bottom:0.6rem;">
-              <span class="card-title" style="font-size:0.95rem;">🛡️ The 3 Laws of TaskHelix</span>
+            <div class="card-header" style="margin-bottom:0.5rem; padding-bottom:0.5rem;">
+              <span class="card-title" style="font-size:0.92rem;">🛡️ The 3 Laws of TaskHelix</span>
             </div>
-            <div style="display:flex; flex-direction:column; gap:0.65rem; font-size:0.85rem;">
-              <div style="border-left:2px solid var(--color-emerald-active); padding-left:0.6rem;">
+            <div style="display:flex; flex-direction:column; gap:0.6rem; font-size:0.825rem;">
+              <div style="border-left:2px solid var(--color-emerald-active); padding-left:0.55rem;">
                 <strong style="color:var(--color-emerald-active);">1. Law of the Arena:</strong> Knowledge without market risk is entertainment. Pitch today.
               </div>
-              <div style="border-left:2px solid var(--color-signal-orange); padding-left:0.6rem;">
+              <div style="border-left:2px solid var(--color-signal-orange); padding-left:0.55rem;">
                 <strong style="color:var(--color-signal-orange);">2. Law of Good Enough:</strong> An 80% template shipped beats 100% in staging.
               </div>
-              <div style="border-left:2px solid var(--color-halo-blue); padding-left:0.6rem;">
+              <div style="border-left:2px solid var(--color-halo-blue); padding-left:0.55rem;">
                 <strong style="color:var(--color-halo-blue);">3. Emotional Independence:</strong> We act with trembling hands; confidence follows.
               </div>
             </div>
@@ -244,9 +244,9 @@
       </div>
 
       <!-- Built-In Interactive Timers Module -->
-      <div style="margin-top: 1.75rem;">
+      <div style="margin-top: 1.5rem;">
         <span class="category-eyebrow violet">Physiological Control</span>
-        <h3 style="margin-bottom: 0.85rem; color:var(--color-frost-white);">Attentional & State-Change Timers</h3>
+        <h3 style="margin-bottom: 0.75rem; color:var(--color-frost-white);">Attentional & State-Change Timers</h3>
         
         <div class="timers-grid">
           
@@ -258,7 +258,7 @@
                 <span id="wimHofCircleText">Ready</span>
               </div>
             </div>
-            <span id="wimHofStatus" class="mono" style="font-size:0.8rem; color:var(--color-platinum); margin-bottom:0.75rem;">Ready for 3 Rounds</span>
+            <span id="wimHofStatus" class="mono" style="font-size:0.75rem; color:var(--color-platinum); margin-bottom:0.65rem;">Ready for 3 Rounds</span>
             <button class="btn btn-secondary btn-sm" id="wimHofActionBtn">
               Start Wim Hof (3 Rounds)
             </button>
@@ -268,9 +268,9 @@
           <div class="timer-card">
             <span class="timer-title">5-Min Pre-Work Meditation</span>
             <div class="timer-digits mono" id="meditationDigits">05:00</div>
-            <span class="mono" style="font-size:0.75rem; color:var(--color-platinum); margin-bottom:0.75rem;">Harmonic bell chime at 2:30 & 0:00</span>
-            <div style="display:flex; gap:0.4rem;">
-              <button class="btn btn-primary btn-sm" id="meditationToggleBtn">Start 5m Meditation</button>
+            <span class="mono" style="font-size:0.72rem; color:var(--color-platinum); margin-bottom:0.65rem;">Harmonic bell chime at 2:30 & 0:00</span>
+            <div style="display:flex; gap:0.35rem;">
+              <button class="btn btn-primary btn-sm" id="meditationToggleBtn">Start 5m</button>
               <button class="btn btn-secondary btn-sm" onclick="Timers.meditation.reset()">Reset</button>
             </div>
           </div>
@@ -279,7 +279,7 @@
           <div class="timer-card" style="border-color: rgba(255, 69, 58, 0.35);">
             <span class="timer-title" style="color:#ff8b85;">2-Min Procrastination Reset</span>
             <div class="timer-digits mono" id="freezeDigits" style="color:var(--color-crimson-alert);">02:00</div>
-            <span style="font-size:0.75rem; color:var(--color-platinum); margin-bottom:0.75rem;">Physical movement + 1 micro-sentence</span>
+            <span style="font-size:0.72rem; color:var(--color-platinum); margin-bottom:0.65rem;">Physical movement + 1 micro-sentence</span>
             <button class="btn btn-emergency btn-sm" id="freezeResetBtn">
               Start 2-Min Reset
             </button>
@@ -292,25 +292,31 @@
     <!-- TAB 2: SCHEDULE REALITY AUDIT (PLANNED VS ACTUAL) -->
     <section id="tab_schedule" class="tab-content">
       
+      <div class="tab-header-banner">
+        <span class="category-eyebrow emerald">Truth Architecture</span>
+        <h2>Schedule Reality Audit</h2>
+        <p>Log what actually happened with zero shame. Turn avoidance into behavioral intelligence.</p>
+      </div>
+
       <!-- Date Navigation Pill -->
       <div class="date-nav-bar">
         <button class="btn btn-secondary btn-sm" onclick="changeAuditDate(-1)">◀ Prev</button>
         <div class="current-audit-date">
           <span class="mono" id="auditDateDisplay">Mon, Aug 17, 2026</span>
-          <button class="btn btn-secondary btn-sm" onclick="setAuditDateToday()" style="padding:0.2rem 0.55rem; font-size:0.75rem;">Today</button>
+          <button class="btn btn-secondary btn-sm" onclick="setAuditDateToday()" style="padding:0.18rem 0.5rem; font-size:0.72rem;">Today</button>
         </div>
         <button class="btn btn-secondary btn-sm" onclick="changeAuditDate(1)">Next ▶</button>
       </div>
 
       <!-- Daily Truth & Analytics Overview -->
-      <div class="card" style="margin-bottom: 1.25rem;">
+      <div class="card" style="margin-bottom: 1.15rem;">
         <div class="card-header">
           <span class="card-title">📊 Planned vs. Actual Time Architecture</span>
           <span class="discomfort-tag mono" id="auditAdherenceScoreBadge">Adherence: 0%</span>
         </div>
 
-        <div style="font-size:0.875rem; color:var(--color-platinum); margin-bottom:0.4rem;">
-          <strong style="color:var(--color-frost-white);">Deep Work Allocation:</strong>
+        <div style="font-size:0.85rem; color:var(--color-platinum); margin-bottom:0.35rem;">
+          <strong style="color:var(--color-frost-white);">Deep Work:</strong>
           <span id="auditDeepWorkSummaryText">Planned 2.7h | Executed 0.0h | Avoided 0.0h</span>
         </div>
 
@@ -321,14 +327,14 @@
           <div class="bar-segment pending" id="auditBarPending" style="width:100%;"></div>
         </div>
 
-        <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--color-platinum); margin-top:0.25rem;">
-          <span style="color:var(--color-emerald-active);">● Executed as Planned</span>
+        <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--color-platinum); margin-top:0.25rem; flex-wrap:wrap; gap:0.25rem;">
+          <span style="color:var(--color-emerald-active);">● Executed</span>
           <span style="color:var(--color-signal-orange);">● Deviated / Avoidance</span>
-          <span>● Unaudited / Pending</span>
+          <span>● Unaudited</span>
         </div>
 
-        <div style="margin-top:0.85rem; padding-top:0.65rem; border-top:1px solid rgba(255,255,255,0.06); font-size:0.85rem;">
-          <span style="color:var(--color-platinum);">Top Avoidance Trigger Detected: </span>
+        <div style="margin-top:0.75rem; padding-top:0.6rem; border-top:1px solid rgba(255,255,255,0.06); font-size:0.825rem;">
+          <span style="color:var(--color-platinum);">Top Avoidance Trigger: </span>
           <strong style="color:var(--color-signal-orange);" id="auditTopTriggerText">None Logged (Clean Data)</strong>
         </div>
       </div>
@@ -347,7 +353,7 @@
 
     <!-- TAB 3: 12-WEEK ROADMAP -->
     <section id="tab_roadmap" class="tab-content">
-      <div style="margin-bottom:1.15rem;">
+      <div class="tab-header-banner">
         <span class="category-eyebrow teal">Master Progression</span>
         <h2>12-Week Transformation Plan</h2>
         <p>Progressive overload in difficulty. Check off daily and weekly non-negotiables.</p>
@@ -360,14 +366,17 @@
 
     <!-- TAB 4: EXPOSURE LADDER -->
     <section id="tab_exposure" class="tab-content">
-      <div class="card" style="margin-bottom:1.25rem;">
+      <div class="tab-header-banner">
+        <span class="category-eyebrow violet">Limbic Desensitization</span>
+        <h2>Systematic Exposure Ladder</h2>
+        <p>Survive each micro-exposure to down-regulate resistance and build earned confidence.</p>
+      </div>
+
+      <div class="card">
         <div class="card-header">
-          <span class="card-title">🪜 Systematic Exposure Ladder</span>
+          <span class="card-title">🪜 10-Rung Desensitization Hierarchy</span>
           <span class="discomfort-tag mono">Climb Sequentially</span>
         </div>
-        <p style="margin-bottom:1rem;">
-          Survive each micro-exposure to down-regulate limbic resistance and build earned confidence.
-        </p>
 
         <div id="exposureLadderContainer">
           <!-- Injected dynamically via JS -->
@@ -377,7 +386,13 @@
 
     <!-- TAB 5: BEHAVIORAL TRACKER -->
     <section id="tab_tracker" class="tab-content">
-      <div class="card" style="margin-bottom:1.25rem;">
+      <div class="tab-header-banner">
+        <span class="category-eyebrow blue">Behavioral Activation</span>
+        <h2>Mood Lift & Action Tracker</h2>
+        <p>Proof that action precedes motivation. Log what you did and measure the mood lift.</p>
+      </div>
+
+      <div class="card" style="margin-bottom:1.15rem;">
         <div class="card-header">
           <span class="card-title">📝 Log Behavioral Action</span>
         </div>
@@ -443,7 +458,7 @@
 
     <!-- TAB 6: SCRIPT VAULT & SOPS -->
     <section id="tab_scripts" class="tab-content">
-      <div style="margin-bottom:1.15rem;">
+      <div class="tab-header-banner">
         <span class="category-eyebrow blue">Conversion Assets</span>
         <h2>Production Script Vault & SOPs</h2>
         <p>1-Click clipboard copy for Upwork bidding, discovery calls, and client boundary protection.</p>

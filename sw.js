@@ -1,5 +1,5 @@
 // TaskHelix Service Worker — Offline Caching Engine
-const CACHE_NAME = 'taskhelix-cache-v5';
+const CACHE_NAME = 'taskhelix-cache-v6';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
