@@ -1,5 +1,5 @@
 // TaskHelix Service Worker — High-Performance Stale-While-Revalidate Engine
-const CACHE_NAME = 'taskhelix-cache-v7';
+const CACHE_NAME = 'taskhelix-cache-v8';
 const CORE_ASSETS = [
   './',
   './index.html',

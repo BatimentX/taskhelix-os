@@ -428,8 +428,27 @@ function updateActivityRings(metrics, totalLoggedMinutes) {
 }
 
 // --------------------------------------------------------------------------
-// 4. Timers Engine (Wim Hof, 5-Min Meditation, 2-Min Reset)
+// 4. Wim Hof Breathing (Video & Visual Orb Modes) & Timers Engine
 // --------------------------------------------------------------------------
+function setBreathingMode(mode) {
+  const videoView = document.getElementById('breathingVideoView');
+  const orbView = document.getElementById('breathingOrbView');
+  const btnVideo = document.getElementById('btnBreathingModeVideo');
+  const btnOrb = document.getElementById('btnBreathingModeOrb');
+
+  if (mode === 'video') {
+    if (videoView) videoView.style.display = 'block';
+    if (orbView) orbView.style.display = 'none';
+    if (btnVideo) btnVideo.classList.add('active');
+    if (btnOrb) btnOrb.classList.remove('active');
+  } else {
+    if (videoView) videoView.style.display = 'none';
+    if (orbView) orbView.style.display = 'block';
+    if (btnVideo) btnVideo.classList.remove('active');
+    if (btnOrb) btnOrb.classList.add('active');
+  }
+}
+
 const Timers = {
   wimHof: {
     round: 1,

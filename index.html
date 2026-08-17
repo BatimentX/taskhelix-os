@@ -244,27 +244,71 @@
 
       </div>
 
-      <!-- Built-In Interactive Timers Module -->
+      <!-- Built-In Interactive Timers & Physiological Control Module -->
       <div style="margin-top: 1.5rem;">
         <span class="category-eyebrow violet">Physiological Control</span>
-        <h3 style="margin-bottom: 0.75rem; color:var(--color-frost-white);">Attentional & State-Change Timers</h3>
+        <h3 style="margin-bottom: 0.75rem; color:var(--color-frost-white);">Wim Hof Guided Breathing & State-Change Timers</h3>
         
-        <div class="timers-grid">
-          
-          <!-- Timer 1: Wim Hof Breath Pacer -->
-          <div class="timer-card">
-            <span class="timer-title">Wim Hof Breath Pacer (3 Rounds)</span>
+        <!-- Wim Hof Breathing Master Vitrine -->
+        <div class="breathing-showcase-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.75rem;">
+            <div>
+              <h4 style="font-size:1.05rem; color:var(--color-frost-white);">Wim Hof Method (3 Rounds Protocol)</h4>
+              <p style="font-size:0.8rem; color:var(--color-platinum);">Oxygenate prefrontal cortex & down-regulate amygdala before outreach.</p>
+            </div>
+            
+            <!-- Mode Segmented Switcher -->
+            <div class="breathing-mode-segmented" role="tablist">
+              <button class="breathing-mode-btn active" id="btnBreathingModeVideo" onclick="setBreathingMode('video')">
+                📺 Guided Video (Official)
+              </button>
+              <button class="breathing-mode-btn" id="btnBreathingModeOrb" onclick="setBreathingMode('orb')">
+                🫧 Visual Breath Orb
+              </button>
+            </div>
+          </div>
+
+          <!-- Video Mode View -->
+          <div id="breathingVideoView">
+            <div class="video-responsive-wrap">
+              <iframe 
+                id="wimHofIframe"
+                src="https://www.youtube-nocookie.com/embed/tybOi4hjZFQ?rel=0&modestbranding=1&enablejsapi=1" 
+                title="Wim Hof Method Guided Breathing for Beginners (3 Rounds Slow Pace)" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowfullscreen>
+              </iframe>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.75rem; font-size:0.78rem; color:var(--color-platinum); flex-wrap:wrap; gap:0.5rem;">
+              <span>Official 11-min guided session by Wim Hof (3 rounds with retention holds).</span>
+              <button class="btn btn-secondary btn-sm" onclick="setBreathingMode('orb')">
+                Switch to Offline Breath Orb ➔
+              </button>
+            </div>
+          </div>
+
+          <!-- Visual Breath Orb Mode View (Offline Synthesizer) -->
+          <div id="breathingOrbView" style="display:none; text-align:center; padding: 1rem 0;">
             <div class="pacer-container">
               <div class="pacer-circle" id="wimHofCircle">
                 <span id="wimHofCircleText">Ready</span>
               </div>
             </div>
-            <span id="wimHofStatus" class="mono" style="font-size:0.75rem; color:var(--color-platinum); margin-bottom:0.65rem;">Ready for 3 Rounds</span>
-            <button class="btn btn-secondary btn-sm" id="wimHofActionBtn">
-              Start Wim Hof (3 Rounds)
-            </button>
+            <span id="wimHofStatus" class="mono" style="font-size:0.8rem; color:var(--color-platinum); display:block; margin-bottom:0.75rem;">Ready for 3 Rounds</span>
+            <div style="display:flex; justify-content:center; gap:0.5rem; flex-wrap:wrap;">
+              <button class="btn btn-primary btn-sm" id="wimHofActionBtn">
+                Start Wim Hof (3 Rounds)
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="Timers.wimHof.reset()">
+                Reset
+              </button>
+            </div>
           </div>
+        </div>
 
+        <!-- Secondary Timers Grid -->
+        <div class="timers-grid">
+          
           <!-- Timer 2: 5-Minute Meditation Timer -->
           <div class="timer-card">
             <span class="timer-title">5-Min Pre-Work Meditation</span>
