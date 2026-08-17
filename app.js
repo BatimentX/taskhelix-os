@@ -1336,6 +1336,10 @@ function switchTab(tabId) {
     btn.classList.toggle('active', btn.dataset.tab === tabId);
   });
 
+  document.querySelectorAll('.mobile-nav-item').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === tabId);
+  });
+
   document.querySelectorAll('.tab-content').forEach(content => {
     content.classList.toggle('active', content.id === `tab_${tabId}`);
   });
@@ -1343,6 +1347,9 @@ function switchTab(tabId) {
   if (tabId === 'schedule') {
     renderScheduleAudit();
   }
+  
+  // Smoothly scroll to top on tab switch
+  window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
 // --------------------------------------------------------------------------
