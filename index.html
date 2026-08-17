@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TaskHelix // 12-Week Execution OS</title>
+  
+  <!-- PWA & Mobile Web App Meta -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#070a0f">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TaskHelix">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23070a0f'/><text x='50%' y='68%' font-size='60' text-anchor='middle'>⚡</text></svg>">
+
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Top Navigation & Live Chronometer -->
+  <header class="app-header">
+    <div class="header-container">
+      
+      <!-- Brand -->
+      <div class="brand-section">
+        <span class="brand-badge mono">BETA 1.0</span>
+        <div class="brand-title">
+          TASK<span>HELIX</span>
+          <span style="font-size:0.75rem; color:var(--text-muted); font-weight:600; margin-left:0.25rem;">// EXECUTION OS</span>
+        </div>
+      </div>
+
+      <!-- Live Chronometer & Active Shift Block -->
+      <div class="chrono-live-bar">
+        <div class="live-time-display">
+          <span class="live-time-label" id="liveDate">Mon, Aug 17</span>
+          <span class="live-time-val mono" id="liveClock">15:20:00</span>
+        </div>
+        
+        <div style="height:24px; width:1px; background-color:var(--border-medium);"></div>
+
+        <div class="active-block-pill">
+          <div class="block-pill-title">
+            <span class="pulse-dot"></span>
+            <span id="activeBlockName">Protected Deep Work 1</span>
+          </div>
+          <span class="block-pill-time mono" id="activeBlockTime">15:20 - 16:45</span>
+        </div>
+      </div>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <button class="btn btn-emergency" onclick="openEmergencyModal()">
+          🚨 EMERGENCY RESET
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="exportBackupData()" title="Export JSON Backup">
+          💾 Export
+        </button>
+        <label class="btn btn-secondary btn-sm" style="cursor:pointer;" title="Import JSON Backup">
+          📂 Import
+          <input type="file" id="backupFileInput" aria-label="Import Backup File" style="display:none;" onchange="importBackupData(event)" accept=".json">
+        </label>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="nav-tabs" role="tablist">
+    <button class="tab-btn active" data-tab="cockpit" role="tab">⚡ Execution Cockpit</button>
+    <button class="tab-btn" data-tab="schedule" role="tab">🕒 Schedule Reality Audit</button>
+    <button class="tab-btn" data-tab="roadmap" role="tab">🗺️ 12-Week Roadmap</button>
+    <button class="tab-btn" data-tab="exposure" role="tab">🪜 Exposure Ladder</button>
+    <button class="tab-btn" data-tab="tracker" role="tab">📊 Behavioral Tracker</button>
+    <button class="tab-btn" data-tab="scripts" role="tab">📜 Script Vault & SOPs</button>
+  </nav>
+
+  <!-- Main Content Layout -->
+  <main class="main-wrapper">
+
+    <!-- Top Telemetry KPI Strip -->
+    <section class="grid-4" style="margin-bottom: 1.5rem;">
+      <div class="metric-box">
+        <span class="metric-label">Deep Work Executed</span>
+        <span class="metric-val emerald mono" id="statDeepWorkHours">0.0 hrs</span>
+      </div>
+      <div class="metric-box">
+        <span class="metric-label">Today's Schedule Adherence</span>
+        <span class="metric-val azure mono" id="statTodayAdherence">--%</span>
+      </div>
+      <div class="metric-box">
+        <span class="metric-label">Lost to Avoidance Today</span>
+        <span class="metric-val crimson mono" id="statAvoidanceHours">0.0 hrs</span>
+      </div>
+      <div class="metric-box">
+        <span class="metric-label">Exposure Rungs Conquered</span>
+        <span class="metric-val amber mono" id="statLaddersConquered">0 / 10</span>
+      </div>
+    </section>
+
+    <!-- TAB 1: EXECUTION COCKPIT -->
+    <section id="tab_cockpit" class="tab-content active">
+      <div class="grid-cockpit">
+        
+        <!-- Left: Active Focus Hero -->
+        <div class="card active-focus-hero">
+          <div class="hero-header">
+            <span class="hero-tag mono" id="heroBlockTag">CURRENT BLOCK</span>
+            <span class="hero-countdown mono" id="heroCountdown">--:-- remaining</span>
+          </div>
+
+          <div class="hero-instruction" id="heroInstruction">
+            Execute Wim Hof Breathing & Hydration
+          </div>
+
+          <p class="hero-description" id="heroDescription">
+            Hydration (500ml + electrolytes), 3 rounds Wim Hof breathing, sunlight/light therapy. No phone checking.
+          </p>
+
+          <!-- Real-Time Progress Bar -->
+          <div style="background-color:rgba(0,0,0,0.5); height:6px; border-radius:4px; overflow:hidden; margin-bottom: 1.25rem;">
+            <div id="heroProgressBar" style="width:0%; height:100%; background-color:var(--accent-emerald); transition: width 1s linear;"></div>
+          </div>
+
+          <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="switchTab('schedule')">
+              🕒 Audit Current Shift Block
+            </button>
+            <button class="btn btn-secondary" onclick="switchTab('tracker')">
+              📝 Log Behavioral Action
+            </button>
+            <button class="btn btn-secondary" onclick="switchTab('scripts')">
+              📋 Open Pitch Scripts
+            </button>
+            <button class="btn btn-secondary" onclick="openEmergencyModal()">
+              🛡️ Overcome Resistance
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Rapid Mindset Directives & Brown Noise Generator -->
+        <div style="display:flex; flex-direction:column; gap:1.25rem;">
+          
+          <!-- Focus Audio Synth Card -->
+          <div class="card" style="background:var(--bg-surface-elevated); border-color:rgba(59, 130, 246, 0.3);">
+            <div class="card-header" style="margin-bottom:0.5rem; padding-bottom:0.5rem;">
+              <span class="card-title" style="color:var(--accent-azure); font-size:0.9rem;">
+                🎧 Ambient Focus Audio (Brown Noise Synth)
+              </span>
+              <span class="mono" id="focusAudioStatus" style="font-size:0.75rem; color:var(--text-muted);">Offline / Paused</span>
+            </div>
+            <p style="color:var(--text-secondary); font-size:0.8rem; margin-bottom:0.75rem;">
+              Continuous synthesized sound. Eliminates opening YouTube/Spotify for focus audio.
+            </p>
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem;">
+              <button class="btn btn-primary btn-sm" id="focusAudioToggleBtn">
+                ▶ Start Brown Noise
+              </button>
+              <div style="display:flex; align-items:center; gap:0.5rem; flex:1; max-width:140px;">
+                <label for="focusAudioVolume" style="font-size:0.7rem; color:var(--text-muted);">Vol:</label>
+                <input type="range" id="focusAudioVolume" min="0" max="1" step="0.05" value="0.5" style="width:100%;">
+              </div>
+            </div>
+          </div>
+
+          <!-- Mindset Laws Card -->
+          <div class="card">
+            <div class="card-header" style="margin-bottom:0.5rem; padding-bottom:0.5rem;">
+              <span class="card-title" style="font-size:0.9rem;">🛡️ The 3 Laws of TaskHelix</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.825rem;">
+              <div style="border-left:3px solid var(--accent-emerald); padding-left:0.5rem;">
+                <strong style="color:var(--accent-emerald);">1. Law of the Arena:</strong> Knowledge without market risk is entertainment. Pitch today.
+              </div>
+              <div style="border-left:3px solid var(--accent-amber); padding-left:0.5rem;">
+                <strong style="color:var(--accent-amber);">2. Law of Good Enough:</strong> An 80% template shipped today beats 100% in staging.
+              </div>
+              <div style="border-left:3px solid var(--accent-azure); padding-left:0.5rem;">
+                <strong style="color:var(--accent-azure);">3. Emotional Independence:</strong> We act with trembling hands; confidence is earned retroactively.
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Built-In Interactive Timers Module -->
+      <div style="margin-top: 1.5rem;">
+        <h3 style="margin-bottom: 0.75rem; color:var(--text-primary);">⚡ Physiological & Attentional Ignition Timers</h3>
+        
+        <div class="timers-grid">
+          
+          <!-- Timer 1: Wim Hof Breath Pacer -->
+          <div class="timer-card">
+            <span class="timer-title">Wim Hof Breath Pacer (3 Rounds)</span>
+            <div class="pacer-container">
+              <div class="pacer-circle" id="wimHofCircle">
+                <span id="wimHofCircleText">Ready</span>
+              </div>
+            </div>
+            <span id="wimHofStatus" class="mono" style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.75rem;">Ready for 3 Rounds</span>
+            <button class="btn btn-secondary btn-sm" id="wimHofActionBtn">
+              Start Wim Hof (3 Rounds)
+            </button>
+          </div>
+
+          <!-- Timer 2: 5-Minute Meditation Timer -->
+          <div class="timer-card">
+            <span class="timer-title">5-Min Pre-Work Meditation</span>
+            <div class="timer-digits mono" id="meditationDigits">05:00</div>
+            <span class="mono" style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.75rem;">Harmonic bell chime at 2:30 & 0:00</span>
+            <div style="display:flex; gap:0.4rem;">
+              <button class="btn btn-primary btn-sm" id="meditationToggleBtn">Start 5m Meditation</button>
+              <button class="btn btn-secondary btn-sm" onclick="Timers.meditation.reset()">Reset</button>
+            </div>
+          </div>
+
+          <!-- Timer 3: 2-Minute Acute Freeze Reset -->
+          <div class="timer-card" style="border-color: rgba(239, 68, 68, 0.3);">
+            <span class="timer-title" style="color:#fca5a5;">2-Min Procrastination Reset</span>
+            <div class="timer-digits mono" id="freezeDigits" style="color:var(--accent-crimson);">02:00</div>
+            <span style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:0.75rem;">Physical movement + 1 micro-sentence commitment</span>
+            <button class="btn btn-emergency btn-sm" id="freezeResetBtn">
+              Start 2-Min Reset
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: SCHEDULE REALITY AUDIT (PLANNED VS ACTUAL) -->
+    <section id="tab_schedule" class="tab-content">
+      
+      <!-- Date Navigation & Switcher -->
+      <div class="date-nav-bar">
+        <button class="btn btn-secondary btn-sm" onclick="changeAuditDate(-1)">
+          ◀ Previous Day
+        </button>
+        <div class="current-audit-date">
+          <span>📅 Date:</span>
+          <span class="mono" id="auditDateDisplay">Mon, Aug 17, 2026</span>
+          <button class="btn btn-secondary btn-sm" onclick="setAuditDateToday()" style="margin-left:0.5rem;">Today</button>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="changeAuditDate(1)">
+          Next Day ▶
+        </button>
+      </div>
+
+      <!-- Daily Truth & Analytics Overview -->
+      <div class="card" style="margin-bottom: 1.25rem;">
+        <div class="card-header">
+          <span class="card-title">📊 Planned vs. Actual Time Architecture</span>
+          <span class="discomfort-tag mono" id="auditAdherenceScoreBadge">Adherence: 0%</span>
+        </div>
+
+        <div style="font-size:0.875rem; color:var(--text-secondary); margin-bottom:0.5rem;">
+          <strong style="color:var(--text-primary);">Deep Work Allocation:</strong>
+          <span id="auditDeepWorkSummaryText">Planned 2.7h | Executed 0.0h | Avoided 0.0h</span>
+        </div>
+
+        <!-- Comparison Bar -->
+        <div class="comparison-bar-wrap" title="Green: Executed Deep Work | Amber: Lost to Avoidance | Grey: Unaudited">
+          <div class="bar-segment executed" id="auditBarExecuted" style="width:0%;"></div>
+          <div class="bar-segment avoided" id="auditBarAvoided" style="width:0%;"></div>
+          <div class="bar-segment pending" id="auditBarPending" style="width:100%;"></div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-top:0.25rem;">
+          <span style="color:var(--accent-emerald);">● Executed as Planned</span>
+          <span style="color:var(--accent-amber);">● Deviated / Avoidance</span>
+          <span>● Unaudited / Pending</span>
+        </div>
+
+        <div style="margin-top:0.85rem; padding-top:0.75rem; border-top:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+          <div style="font-size:0.85rem;">
+            <span style="color:var(--text-muted);">Top Avoidance Trigger Detected: </span>
+            <strong style="color:var(--accent-amber);" id="auditTopTriggerText">None Logged (Clean Data)</strong>
+          </div>
+          <div style="font-size:0.8rem; color:var(--text-secondary);">
+            <em>Tip: Dr. K's Sakshi principle — logging the truth with zero shame cures avoidance.</em>
+          </div>
+        </div>
+      </div>
+
+      <!-- Block-by-Block Interactive Audit List -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🕒 Block-by-Block Daily Reality Log</span>
+          <span style="font-size:0.8rem; color:var(--text-muted);">Click 'Followed' or 'Deviated' for each block</span>
+        </div>
+
+        <div id="scheduleAuditListContainer">
+          <!-- Injected dynamically via app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: 12-WEEK ROADMAP -->
+    <section id="tab_roadmap" class="tab-content">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <div>
+          <h3>🗺️ 12-Week Transformation Plan</h3>
+          <p style="color:var(--text-secondary); font-size:0.875rem;">Progressive overload in difficulty. Check off daily and weekly non-negotiables.</p>
+        </div>
+      </div>
+
+      <div id="roadmapContainer">
+        <!-- Injected dynamically via JS -->
+      </div>
+    </section>
+
+    <!-- TAB 4: EXPOSURE LADDER -->
+    <section id="tab_exposure" class="tab-content">
+      <div class="card" style="margin-bottom:1.5rem;">
+        <div class="card-header">
+          <span class="card-title">🪜 Systematic Desensitization Exposure Ladder</span>
+          <span class="discomfort-tag mono">Climb Sequentially</span>
+        </div>
+        <p style="color:var(--text-secondary); font-size:0.875rem; margin-bottom:1rem;">
+          Do not skip rungs. Each micro-exposure must be survived and logged to down-regulate limbic resistance and build earned confidence.
+        </p>
+
+        <div id="exposureLadderContainer">
+          <!-- Injected dynamically via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: BEHAVIORAL TRACKER -->
+    <section id="tab_tracker" class="tab-content">
+      <div class="card" style="margin-bottom:1.5rem;">
+        <div class="card-header">
+          <span class="card-title">📝 Log Behavioral Action (Action Cures Anxiety)</span>
+        </div>
+
+        <form class="tracker-form" onsubmit="logBehaviorAction(event)">
+          <div class="form-group" style="grid-column: span 2;">
+            <label for="trackerAction">Exact Behavioral Action</label>
+            <input type="text" id="trackerAction" class="form-control" placeholder="e.g. Sent 2 Upwork proposals with Loom audit" required>
+          </div>
+
+          <div class="form-group">
+            <label for="trackerDuration">Duration (Mins)</label>
+            <input type="number" id="trackerDuration" class="form-control mono" value="25" min="1" max="300">
+          </div>
+
+          <div class="form-group">
+            <label for="moodBefore">Mood Before (1-5)</label>
+            <div class="slider-container">
+              <input type="range" id="moodBefore" min="1" max="5" value="2" class="form-control" style="padding:0;">
+              <span class="mood-val-badge mono" id="moodBeforeVal">2</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="moodAfter">Mood After (1-5)</label>
+            <div class="slider-container">
+              <input type="range" id="moodAfter" min="1" max="5" value="4" class="form-control" style="padding:0;">
+              <span class="mood-val-badge mono" id="moodAfterVal">4</span>
+            </div>
+          </div>
+
+          <div class="form-group" style="grid-column: span 4;">
+            <label for="trackerNotes">Resistance / Victory Notes</label>
+            <input type="text" id="trackerNotes" class="form-control" placeholder="e.g. Felt initial urge to check email; pushed through and hit submit.">
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="height:36px;">
+            Log Action
+          </button>
+        </form>
+
+        <div class="data-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Action</th>
+                <th>Duration</th>
+                <th>Before</th>
+                <th>After</th>
+                <th>Mood Delta</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody id="trackerTableBody">
+              <!-- Injected dynamically via JS -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 6: SCRIPT VAULT & SOPS -->
+    <section id="tab_scripts" class="tab-content">
+      <div style="margin-bottom:1rem;">
+        <h3>📜 Production Script Vault & Diagnostic Responses</h3>
+        <p style="color:var(--text-secondary); font-size:0.875rem;">1-Click clipboard copy for Upwork bidding, discovery calls, and boundary protection.</p>
+      </div>
+
+      <div id="scriptVaultContainer">
+        <!-- Injected dynamically via JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Deviation Logging Modal Drawer -->
+  <div class="modal-overlay" id="deviationModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="color:var(--accent-amber); display:flex; align-items:center; gap:0.5rem;">
+          ⚠️ Log Schedule Deviation (Truth Audit)
+        </h3>
+        <button class="btn btn-sm btn-secondary" onclick="closeDeviationModal()">Cancel [Esc]</button>
+      </div>
+
+      <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:1rem;">
+        Zero shame. By recording what happened and why, you transform avoidance into valuable behavioral intelligence.
+      </p>
+
+      <input type="hidden" id="deviationBlockId" aria-label="Deviation Block ID">
+
+      <div style="margin-bottom:1.25rem;">
+        <label style="font-size:0.8rem; font-weight:700; color:var(--text-primary); display:block; margin-bottom:0.35rem;">
+          1. What were you doing instead?
+        </label>
+        <div class="chip-grid" id="deviationActivityChips">
+          <!-- Injected via app.js -->
+        </div>
+      </div>
+
+      <div style="margin-bottom:1.25rem;">
+        <label style="font-size:0.8rem; font-weight:700; color:var(--text-primary); display:block; margin-bottom:0.35rem;">
+          2. What was the underlying emotional driver / why?
+        </label>
+        <div class="chip-grid" id="deviationDriverChips">
+          <!-- Injected via app.js -->
+        </div>
+      </div>
+
+      <div style="margin-bottom:1.25rem;">
+        <label for="deviationNotesInput" style="font-size:0.8rem; font-weight:700; color:var(--text-primary); display:block; margin-bottom:0.35rem;">
+          3. Optional Details / Specific Thought Pattern:
+        </label>
+        <input type="text" id="deviationNotesInput" class="form-control" style="width:100%;" placeholder="e.g. Got overwhelmed by n8n error handling syntax; opened YouTube.">
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
+        <button class="btn btn-secondary" onclick="closeDeviationModal()">Cancel</button>
+        <button class="btn btn-warning" onclick="saveDeviationLog()">Save Deviation Record</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Emergency Obstacle Modal Drawer -->
+  <div class="modal-overlay" id="emergencyModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="color:#fca5a5; display:flex; align-items:center; gap:0.5rem;">
+          🚨 Emergency Obstacle Interventions ("If-Then" System)
+        </h3>
+        <button class="btn btn-sm btn-secondary" onclick="closeEmergencyModal()">Close [Esc]</button>
+      </div>
+
+      <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:1rem;">
+        When you experience acute cognitive freezing, shame, perfectionism, or relapse, execute the specific countermeasure below immediately without debate.
+      </p>
+
+      <div id="obstacleList">
+        <!-- Injected dynamically via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Feedback -->
+  <div class="toast" id="appToast">Notification</div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
