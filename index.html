@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="description" content="TaskHelix 12-Week Execution OS — Behavioral activation, schedule reality audit, and systematic exposure system.">
-  <title>TaskHelix // 12-Week Execution OS</title>
+  <title>TaskHelix // Execution OS</title>
   
   <!-- PWA & Mobile Web App Meta -->
   <link rel="manifest" href="manifest.json">
@@ -28,82 +28,191 @@
 </head>
 <body>
 
-  <!-- Top Showcase Header -->
+  <!-- iOS Notification Center -->
+  <div id="ios-notification-center"></div>
+
+  <!-- Top Showcase Header (iOS UINavigationBar style) -->
   <header class="app-header">
     <div class="header-container">
-      
-      <!-- Brand Stage -->
-      <div class="brand-section">
-        <span class="brand-glyph">⚡</span>
-        <div class="brand-title">
-          TaskHelix <span>OS</span>
-        </div>
-      </div>
-
-      <!-- Chronometer Pill Complication -->
-      <div class="chrono-live-bar">
-        <span class="live-time-val mono" id="liveClock">15:20:00</span>
-        <div style="height:14px; width:1px; background-color:var(--color-smoke); flex-shrink:0;"></div>
-        <div class="active-block-pill">
-          <span class="pulse-dot"></span>
-          <span class="block-pill-title" id="activeBlockName">Deep Work 1</span>
-        </div>
-      </div>
-
-      <!-- Header Action Cluster -->
       <div class="header-actions">
-        <button class="btn btn-emergency btn-sm" onclick="openEmergencyModal()" title="Emergency Reset">
-          🚨 <span class="hide-mobile">Reset</span>
-        </button>
-        <button class="btn btn-secondary btn-sm" onclick="exportBackupData()" title="Export JSON Backup">
-          💾 <span class="hide-mobile">Export</span>
-        </button>
-        <label class="btn btn-secondary btn-sm" style="cursor:pointer;" title="Import JSON Backup">
-          📂 <span class="hide-mobile">Import</span>
+        <label class="btn-text-nav" style="cursor:pointer;" title="Import JSON Backup">
+          Import
           <input type="file" id="backupFileInput" aria-label="Import Backup File" style="display:none;" onchange="importBackupData(event)" accept=".json">
         </label>
-      </div>
 
+        <div class="brand-section">
+          <div class="brand-title">TaskHelix</div>
+        </div>
+
+        <button class="btn-text-nav" onclick="exportBackupData()" title="Export JSON Backup">
+          Export
+        </button>
+      </div>
     </div>
   </header>
 
-  <!-- Desktop Pill Navigation Bar (980px Radius) -->
+  <!-- Desktop Nav is removed in styles.css, using Shared Bottom Nav -->
   <nav class="desktop-nav-tabs" role="tablist">
-    <button class="tab-btn active" data-tab="cockpit" role="tab">⚡ Cockpit</button>
-    <button class="tab-btn" data-tab="schedule" role="tab">🕒 Schedule Audit</button>
-    <button class="tab-btn" data-tab="roadmap" role="tab">🗺️ 12-Week Roadmap</button>
-    <button class="tab-btn" data-tab="exposure" role="tab">🪜 Exposure Ladder</button>
-    <button class="tab-btn" data-tab="tracker" role="tab">📊 Behavioral Tracker</button>
-    <button class="tab-btn" data-tab="scripts" role="tab">📜 Script Vault</button>
+    <!-- Legacy desktop nav hidden by CSS -->
   </nav>
 
   <!-- Main Content Showcase Stage -->
   <main class="main-wrapper">
 
-    <!-- TAB 1: EXECUTION COCKPIT -->
+    <!-- TAB 1: FOCUS (Cockpit) -->
     <section id="tab_cockpit" class="tab-content active">
 
-      <!-- Top Telemetry Stage: Apple Activity Rings + Complication Widgets -->
-      <div class="telemetry-stage-wrapper">
+      <!-- Active Focus Hero Stage -->
+      <div class="card active-focus-hero">
+        <div class="hero-header">
+          <span class="hero-tag mono" id="heroBlockTag">CURRENT BLOCK</span>
+          <span class="hero-countdown mono" id="heroCountdown">--:-- remaining</span>
+        </div>
+
+        <span class="category-eyebrow emerald">Active Protocol</span>
+        <h2 class="hero-instruction" id="heroInstruction">
+          Execute Wim Hof Breathing & Hydration
+        </h2>
+
+        <p class="hero-description" id="heroDescription">
+          Hydration (500ml + electrolytes), 3 rounds Wim Hof breathing, sunlight/light therapy. No phone checking.
+        </p>
+
+        <!-- Glow Progress Track -->
+        <div class="hero-progress-track">
+          <div id="heroProgressBar" class="hero-progress-fill" style="width:0%;"></div>
+        </div>
+
+        <div class="hero-btn-cluster">
+          <button class="btn btn-primary" onclick="switchTab('tracker')">
+            Log Action
+          </button>
+          <button class="btn btn-secondary" onclick="openEmergencyModal()">
+            Overcome Resistance
+          </button>
+        </div>
+      </div>
+
+      <!-- Focus Audio Vitrine Card -->
+      <div class="list-group">
+        <div class="list-item">
+          <div class="list-item-header">
+            <span class="card-title" style="color:var(--color-halo-blue); font-size:16px;">
+              🎧 Ambient Focus Audio
+            </span>
+            <span class="mono" id="focusAudioStatus" style="font-size:13px; color:var(--color-platinum);">Paused</span>
+          </div>
+          <p style="font-size:14px; margin-bottom:12px;">
+            Continuous synthesized brown noise.
+          </p>
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+            <button class="btn btn-primary btn-sm" id="focusAudioToggleBtn">
+              ▶ Start Noise
+            </button>
+            <div style="display:flex; align-items:center; gap:8px; flex:1; max-width:130px;">
+              <label for="focusAudioVolume" style="font-size:12px; color:var(--color-platinum);">Vol:</label>
+              <input type="range" id="focusAudioVolume" aria-label="Ambient Focus Audio Volume" min="0" max="1" step="0.05" value="0.5" style="width:100%;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Built-In Interactive Timers & Physiological Control Module -->
+      <div style="margin-top: 1.5rem;">
+        <span class="category-eyebrow violet">Physiological Control</span>
         
+        <!-- Wim Hof Breathing Master Vitrine -->
+        <div class="card breathing-showcase-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.75rem;">
+            <div>
+              <h4 style="font-size:17px; color:var(--color-frost-white);">Wim Hof Method</h4>
+            </div>
+            
+            <!-- Mode Segmented Switcher -->
+            <div class="breathing-mode-segmented" role="tablist">
+              <button class="breathing-mode-btn active" id="btnBreathingModeVideo" onclick="setBreathingMode('video')">
+                📺 Video
+              </button>
+              <button class="breathing-mode-btn" id="btnBreathingModeOrb" onclick="setBreathingMode('orb')">
+                🫧 Orb
+              </button>
+            </div>
+          </div>
+
+          <!-- Video Mode View -->
+          <div id="breathingVideoView">
+            <div class="video-responsive-wrap">
+              <iframe 
+                id="wimHofIframe"
+                src="https://www.youtube-nocookie.com/embed/tybOi4hjZFQ?rel=0&modestbranding=1&enablejsapi=1" 
+                title="Wim Hof Method Guided Breathing for Beginners" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowfullscreen>
+              </iframe>
+            </div>
+          </div>
+
+          <!-- Visual Breath Orb Mode View (Offline Synthesizer) -->
+          <div id="breathingOrbView" style="display:none; text-align:center; padding: 1rem 0;">
+            <div class="pacer-container">
+              <div class="pacer-circle" id="wimHofCircle">
+                <span id="wimHofCircleText">Ready</span>
+              </div>
+            </div>
+            <span id="wimHofStatus" class="mono" style="font-size:13px; color:var(--color-platinum); display:block; margin-bottom:12px;">Ready for 3 Rounds</span>
+            <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap;">
+              <button class="btn btn-primary btn-sm" id="wimHofActionBtn">
+                Start (3 Rounds)
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="Timers.wimHof.reset()">
+                Reset
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Secondary Timers Grid -->
+        <div class="timers-grid">
+          <div class="card timer-card">
+            <span class="timer-title">5-Min Meditation</span>
+            <div class="timer-digits mono" id="meditationDigits">05:00</div>
+            <div style="display:flex; gap:6px;">
+              <button class="btn btn-primary btn-sm" id="meditationToggleBtn">Start</button>
+              <button class="btn btn-secondary btn-sm" onclick="Timers.meditation.reset()">Reset</button>
+            </div>
+          </div>
+
+          <div class="card timer-card" style="border: 1px solid rgba(255, 69, 58, 0.35);">
+            <span class="timer-title" style="color:#ff8b85;">2-Min Freeze Reset</span>
+            <div class="timer-digits mono" id="freezeDigits" style="color:var(--color-crimson-alert);">02:00</div>
+            <button class="btn btn-emergency btn-sm" id="freezeResetBtn">Start Reset</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: TELEMETRY (Schedule Audit + Rings) -->
+    <section id="tab_telemetry" class="tab-content">
+      <div class="tab-header-banner">
+        <span class="category-eyebrow emerald">Telemetry</span>
+        <h2>Schedule Audit</h2>
+      </div>
+
+      <div class="telemetry-stage-wrapper">
         <!-- Apple Activity Rings Widget -->
-        <div class="activity-rings-card">
+        <div class="card activity-rings-card">
           <div class="rings-svg-container">
             <svg width="96" height="96" viewBox="0 0 104 104">
-              <!-- Outer Ring: Deep Work (Green) -->
               <circle class="ring-bg ring-emerald-bg" cx="52" cy="52" r="44"></circle>
               <circle class="ring-fill ring-emerald-fill" id="ringDeepWork" cx="52" cy="52" r="44" stroke-dasharray="276.46" stroke-dashoffset="276.46"></circle>
               
-              <!-- Middle Ring: Adherence (Blue) -->
               <circle class="ring-bg ring-blue-bg" cx="52" cy="52" r="32"></circle>
               <circle class="ring-fill ring-blue-fill" id="ringAdherence" cx="52" cy="52" r="32" stroke-dasharray="201.06" stroke-dashoffset="201.06"></circle>
               
-              <!-- Inner Ring: Avoidance (Orange) -->
               <circle class="ring-bg ring-orange-bg" cx="52" cy="52" r="20"></circle>
               <circle class="ring-fill ring-orange-fill" id="ringAvoidance" cx="52" cy="52" r="20" stroke-dasharray="125.66" stroke-dashoffset="125.66"></circle>
             </svg>
           </div>
-
           <div class="rings-legend">
             <div class="ring-legend-item">
               <span class="ring-legend-dot" style="background-color:var(--color-emerald-active);"></span>
@@ -120,235 +229,43 @@
           </div>
         </div>
 
-        <!-- Complication Widgets Grid -->
         <div class="grid-4" style="flex:1;">
-          <div class="metric-box">
+          <div class="card metric-box">
             <span class="metric-label">Deep Work</span>
             <span class="metric-val emerald mono" id="statDeepWorkHours">0.0 hrs</span>
           </div>
-          <div class="metric-box">
+          <div class="card metric-box">
             <span class="metric-label">Adherence</span>
             <span class="metric-val azure mono" id="statTodayAdherence">--%</span>
           </div>
-          <div class="metric-box">
+          <div class="card metric-box">
             <span class="metric-label">Avoidance</span>
             <span class="metric-val crimson mono" id="statAvoidanceHours">0.0 hrs</span>
           </div>
-          <div class="metric-box">
+          <div class="card metric-box">
             <span class="metric-label">Exposures</span>
             <span class="metric-val amber mono" id="statLaddersConquered">0 / 10</span>
           </div>
         </div>
-
       </div>
 
       <!-- 24-Hour Shift Ribbon (Visual Timeline) -->
-      <div class="shift-ribbon-card">
+      <div class="card shift-ribbon-card">
         <div class="shift-ribbon-header">
-          <div style="display:flex; align-items:center; gap:0.4rem;">
-            <span class="category-eyebrow emerald" style="margin-bottom:0;">Live Shift Ribbon</span>
-            <span style="font-size:0.75rem; color:var(--color-platinum);">· 24h Circadian Flow</span>
-          </div>
-          <span class="mono" style="font-size:0.72rem; color:var(--color-halo-blue);" id="ribbonActiveBlockTag">Live Tracking</span>
+          <span class="category-eyebrow emerald" style="margin-bottom:0;">Live Shift Ribbon</span>
+          <span class="mono" style="font-size:12px; color:var(--color-halo-blue);" id="ribbonActiveBlockTag">Live Tracking</span>
         </div>
-
         <div class="ribbon-scroll-track" id="shiftRibbonTrack">
           <!-- Injected dynamically via JS -->
         </div>
       </div>
 
-      <!-- Cockpit Main Showcase Grid -->
-      <div class="grid-cockpit">
-        
-        <!-- Left: Active Focus Hero Stage -->
-        <div class="card active-focus-hero">
-          <div class="hero-header">
-            <span class="hero-tag mono" id="heroBlockTag">CURRENT BLOCK</span>
-            <span class="hero-countdown mono" id="heroCountdown">--:-- remaining</span>
-          </div>
-
-          <span class="category-eyebrow emerald">Active Protocol</span>
-          <h2 class="hero-instruction" id="heroInstruction">
-            Execute Wim Hof Breathing & Hydration
-          </h2>
-
-          <p class="hero-description" id="heroDescription">
-            Hydration (500ml + electrolytes), 3 rounds Wim Hof breathing, sunlight/light therapy. No phone checking.
-          </p>
-
-          <!-- Glow Progress Track -->
-          <div class="hero-progress-track">
-            <div id="heroProgressBar" class="hero-progress-fill" style="width:0%;"></div>
-          </div>
-
-          <div class="hero-btn-cluster">
-            <button class="btn btn-primary" onclick="switchTab('schedule')">
-              🕒 Audit Shift Block
-            </button>
-            <button class="btn btn-secondary" onclick="switchTab('tracker')">
-              📝 Log Action
-            </button>
-            <button class="btn btn-secondary" onclick="switchTab('scripts')">
-              📋 Pitch Scripts
-            </button>
-            <button class="btn btn-secondary" onclick="openEmergencyModal()">
-              🛡️ Overcome Resistance
-            </button>
-          </div>
-        </div>
-
-        <!-- Right: Audio Synthesizer & Laws -->
-        <div style="display:flex; flex-direction:column; gap:1.15rem;">
-          
-          <!-- Focus Audio Vitrine Card -->
-          <div class="card" style="background-color:var(--color-carbon); border-color:rgba(0, 113, 227, 0.3);">
-            <div class="card-header" style="margin-bottom:0.5rem; padding-bottom:0.5rem;">
-              <span class="card-title" style="color:var(--color-halo-blue); font-size:0.92rem;">
-                🎧 Ambient Focus Audio
-              </span>
-              <span class="mono" id="focusAudioStatus" style="font-size:0.75rem; color:var(--color-platinum);">Paused</span>
-            </div>
-            <p style="font-size:0.82rem; margin-bottom:0.85rem;">
-              Continuous synthesized brown noise. Eliminates opening YouTube/Spotify for focus audio.
-            </p>
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:0.75rem;">
-              <button class="btn btn-primary btn-sm" id="focusAudioToggleBtn">
-                ▶ Start Noise
-              </button>
-              <div style="display:flex; align-items:center; gap:0.4rem; flex:1; max-width:130px;">
-                <label for="focusAudioVolume" style="font-size:0.72rem; color:var(--color-platinum);">Vol:</label>
-                <input type="range" id="focusAudioVolume" aria-label="Ambient Focus Audio Volume" min="0" max="1" step="0.05" value="0.5" style="width:100%;">
-              </div>
-            </div>
-          </div>
-
-          <!-- Mindset Laws Card -->
-          <div class="card">
-            <div class="card-header" style="margin-bottom:0.5rem; padding-bottom:0.5rem;">
-              <span class="card-title" style="font-size:0.92rem;">🛡️ The 3 Laws of TaskHelix</span>
-            </div>
-            <div style="display:flex; flex-direction:column; gap:0.6rem; font-size:0.825rem;">
-              <div style="border-left:2px solid var(--color-emerald-active); padding-left:0.55rem;">
-                <strong style="color:var(--color-emerald-active);">1. Law of the Arena:</strong> Knowledge without market risk is entertainment. Pitch today.
-              </div>
-              <div style="border-left:2px solid var(--color-signal-orange); padding-left:0.55rem;">
-                <strong style="color:var(--color-signal-orange);">2. Law of Good Enough:</strong> An 80% template shipped beats 100% in staging.
-              </div>
-              <div style="border-left:2px solid var(--color-halo-blue); padding-left:0.55rem;">
-                <strong style="color:var(--color-halo-blue);">3. Emotional Independence:</strong> We act with trembling hands; confidence follows.
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- Built-In Interactive Timers & Physiological Control Module -->
-      <div style="margin-top: 1.5rem;">
-        <span class="category-eyebrow violet">Physiological Control</span>
-        <h3 style="margin-bottom: 0.75rem; color:var(--color-frost-white);">Wim Hof Guided Breathing & State-Change Timers</h3>
-        
-        <!-- Wim Hof Breathing Master Vitrine -->
-        <div class="breathing-showcase-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.75rem;">
-            <div>
-              <h4 style="font-size:1.05rem; color:var(--color-frost-white);">Wim Hof Method (3 Rounds Protocol)</h4>
-              <p style="font-size:0.8rem; color:var(--color-platinum);">Oxygenate prefrontal cortex & down-regulate amygdala before outreach.</p>
-            </div>
-            
-            <!-- Mode Segmented Switcher -->
-            <div class="breathing-mode-segmented" role="tablist">
-              <button class="breathing-mode-btn active" id="btnBreathingModeVideo" onclick="setBreathingMode('video')">
-                📺 Guided Video (Official)
-              </button>
-              <button class="breathing-mode-btn" id="btnBreathingModeOrb" onclick="setBreathingMode('orb')">
-                🫧 Visual Breath Orb
-              </button>
-            </div>
-          </div>
-
-          <!-- Video Mode View -->
-          <div id="breathingVideoView">
-            <div class="video-responsive-wrap">
-              <iframe 
-                id="wimHofIframe"
-                src="https://www.youtube-nocookie.com/embed/tybOi4hjZFQ?rel=0&modestbranding=1&enablejsapi=1" 
-                title="Wim Hof Method Guided Breathing for Beginners (3 Rounds Slow Pace)" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                allowfullscreen>
-              </iframe>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.75rem; font-size:0.78rem; color:var(--color-platinum); flex-wrap:wrap; gap:0.5rem;">
-              <span>Official 11-min guided session by Wim Hof (3 rounds with retention holds).</span>
-              <button class="btn btn-secondary btn-sm" onclick="setBreathingMode('orb')">
-                Switch to Offline Breath Orb ➔
-              </button>
-            </div>
-          </div>
-
-          <!-- Visual Breath Orb Mode View (Offline Synthesizer) -->
-          <div id="breathingOrbView" style="display:none; text-align:center; padding: 1rem 0;">
-            <div class="pacer-container">
-              <div class="pacer-circle" id="wimHofCircle">
-                <span id="wimHofCircleText">Ready</span>
-              </div>
-            </div>
-            <span id="wimHofStatus" class="mono" style="font-size:0.8rem; color:var(--color-platinum); display:block; margin-bottom:0.75rem;">Ready for 3 Rounds</span>
-            <div style="display:flex; justify-content:center; gap:0.5rem; flex-wrap:wrap;">
-              <button class="btn btn-primary btn-sm" id="wimHofActionBtn">
-                Start Wim Hof (3 Rounds)
-              </button>
-              <button class="btn btn-secondary btn-sm" onclick="Timers.wimHof.reset()">
-                Reset
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Secondary Timers Grid -->
-        <div class="timers-grid">
-          
-          <!-- Timer 2: 5-Minute Meditation Timer -->
-          <div class="timer-card">
-            <span class="timer-title">5-Min Pre-Work Meditation</span>
-            <div class="timer-digits mono" id="meditationDigits">05:00</div>
-            <span class="mono" style="font-size:0.72rem; color:var(--color-platinum); margin-bottom:0.65rem;">Harmonic bell chime at 2:30 & 0:00</span>
-            <div style="display:flex; gap:0.35rem;">
-              <button class="btn btn-primary btn-sm" id="meditationToggleBtn">Start 5m</button>
-              <button class="btn btn-secondary btn-sm" onclick="Timers.meditation.reset()">Reset</button>
-            </div>
-          </div>
-
-          <!-- Timer 3: 2-Minute Acute Freeze Reset -->
-          <div class="timer-card" style="border-color: rgba(255, 69, 58, 0.35);">
-            <span class="timer-title" style="color:#ff8b85;">2-Min Procrastination Reset</span>
-            <div class="timer-digits mono" id="freezeDigits" style="color:var(--color-crimson-alert);">02:00</div>
-            <span style="font-size:0.72rem; color:var(--color-platinum); margin-bottom:0.65rem;">Physical movement + 1 micro-sentence</span>
-            <button class="btn btn-emergency btn-sm" id="freezeResetBtn">
-              Start 2-Min Reset
-            </button>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 2: SCHEDULE REALITY AUDIT (PLANNED VS ACTUAL) -->
-    <section id="tab_schedule" class="tab-content">
-      
-      <div class="tab-header-banner">
-        <span class="category-eyebrow emerald">Truth Architecture</span>
-        <h2>Schedule Reality Audit</h2>
-        <p>Log what actually happened with zero shame. Turn avoidance into behavioral intelligence.</p>
-      </div>
-
       <!-- Date Navigation Pill -->
-      <div class="date-nav-bar">
+      <div class="date-nav-bar" style="margin-bottom: 1rem;">
         <button class="btn btn-secondary btn-sm" onclick="changeAuditDate(-1)">◀ Prev</button>
         <div class="current-audit-date">
           <span class="mono" id="auditDateDisplay">Mon, Aug 17, 2026</span>
-          <button class="btn btn-secondary btn-sm" onclick="setAuditDateToday()" style="padding:0.18rem 0.5rem; font-size:0.72rem;">Today</button>
+          <button class="btn btn-secondary btn-sm" onclick="setAuditDateToday()">Today</button>
         </div>
         <button class="btn btn-secondary btn-sm" onclick="changeAuditDate(1)">Next ▶</button>
       </div>
@@ -359,26 +276,16 @@
           <span class="card-title">📊 Planned vs. Actual Time Architecture</span>
           <span class="discomfort-tag mono" id="auditAdherenceScoreBadge">Adherence: 0%</span>
         </div>
-
-        <div style="font-size:0.85rem; color:var(--color-platinum); margin-bottom:0.35rem;">
+        <div style="font-size:14px; color:var(--color-platinum); margin-bottom:8px;">
           <strong style="color:var(--color-frost-white);">Deep Work:</strong>
           <span id="auditDeepWorkSummaryText">Planned 2.7h | Executed 0.0h | Avoided 0.0h</span>
         </div>
-
-        <!-- Comparison Bar -->
-        <div class="comparison-bar-wrap" title="Green: Executed Deep Work | Orange: Lost to Avoidance | Grey: Unaudited">
+        <div class="comparison-bar-wrap">
           <div class="bar-segment executed" id="auditBarExecuted" style="width:0%;"></div>
           <div class="bar-segment avoided" id="auditBarAvoided" style="width:0%;"></div>
           <div class="bar-segment pending" id="auditBarPending" style="width:100%;"></div>
         </div>
-
-        <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--color-platinum); margin-top:0.25rem; flex-wrap:wrap; gap:0.25rem;">
-          <span style="color:var(--color-emerald-active);">● Executed</span>
-          <span style="color:var(--color-signal-orange);">● Deviated / Avoidance</span>
-          <span>● Unaudited</span>
-        </div>
-
-        <div style="margin-top:0.75rem; padding-top:0.6rem; border-top:1px solid rgba(255,255,255,0.06); font-size:0.825rem;">
+        <div style="margin-top:12px; padding-top:12px; border-top:0.5px solid rgba(84, 84, 88, 0.65); font-size:13px;">
           <span style="color:var(--color-platinum);">Top Avoidance Trigger: </span>
           <strong style="color:var(--color-signal-orange);" id="auditTopTriggerText">None Logged (Clean Data)</strong>
         </div>
@@ -389,70 +296,32 @@
         <div class="card-header">
           <span class="card-title">🕒 Block-by-Block Daily Reality Log</span>
         </div>
-
         <div id="scheduleAuditListContainer">
           <!-- Injected dynamically via app.js -->
         </div>
       </div>
     </section>
 
-    <!-- TAB 3: 12-WEEK ROADMAP -->
-    <section id="tab_roadmap" class="tab-content">
-      <div class="tab-header-banner">
-        <span class="category-eyebrow teal">Master Progression</span>
-        <h2>12-Week Transformation Plan</h2>
-        <p>Progressive overload in difficulty. Check off daily and weekly non-negotiables.</p>
-      </div>
-
-      <div id="roadmapContainer">
-        <!-- Injected dynamically via JS -->
-      </div>
-    </section>
-
-    <!-- TAB 4: EXPOSURE LADDER -->
-    <section id="tab_exposure" class="tab-content">
-      <div class="tab-header-banner">
-        <span class="category-eyebrow violet">Limbic Desensitization</span>
-        <h2>Systematic Exposure Ladder</h2>
-        <p>Survive each micro-exposure to down-regulate resistance and build earned confidence.</p>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <span class="card-title">🪜 10-Rung Desensitization Hierarchy</span>
-          <span class="discomfort-tag mono">Climb Sequentially</span>
-        </div>
-
-        <div id="exposureLadderContainer">
-          <!-- Injected dynamically via JS -->
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 5: BEHAVIORAL TRACKER -->
+    <!-- TAB 3: TRACKER (Log Action) -->
     <section id="tab_tracker" class="tab-content">
       <div class="tab-header-banner">
         <span class="category-eyebrow blue">Behavioral Activation</span>
-        <h2>Mood Lift & Action Tracker</h2>
-        <p>Proof that action precedes motivation. Log what you did and measure the mood lift.</p>
+        <h2>Log Action Tracker</h2>
       </div>
 
       <div class="card" style="margin-bottom:1.15rem;">
         <div class="card-header">
           <span class="card-title">📝 Log Behavioral Action</span>
         </div>
-
         <form class="tracker-form" onsubmit="logBehaviorAction(event)">
           <div class="form-group" style="grid-column: span 2;">
             <label for="trackerAction">Exact Behavioral Action</label>
             <input type="text" id="trackerAction" aria-label="Exact Behavioral Action Description" class="form-control" placeholder="e.g. Sent 2 Upwork proposals with Loom" required>
           </div>
-
           <div class="form-group">
             <label for="trackerDuration">Duration (Mins)</label>
             <input type="number" id="trackerDuration" aria-label="Duration in minutes" class="form-control mono" value="25" min="1" max="300">
           </div>
-
           <div class="form-group">
             <label for="moodBefore">Mood Before (1-5)</label>
             <div class="slider-container">
@@ -460,7 +329,6 @@
               <span class="mood-val-badge mono" id="moodBeforeVal">2</span>
             </div>
           </div>
-
           <div class="form-group">
             <label for="moodAfter">Mood After (1-5)</label>
             <div class="slider-container">
@@ -468,18 +336,16 @@
               <span class="mood-val-badge mono" id="moodAfterVal">4</span>
             </div>
           </div>
-
           <div class="form-group" style="grid-column: span 4;">
             <label for="trackerNotes">Resistance / Victory Notes</label>
             <input type="text" id="trackerNotes" aria-label="Resistance or Victory Notes" class="form-control" placeholder="e.g. Felt urge to check email; pushed through.">
           </div>
-
-          <button type="submit" class="btn btn-primary" style="height:38px;">
+          <button type="submit" class="btn btn-primary" style="height:44px; width:100%;">
             Log Action
           </button>
         </form>
-
-        <div class="data-table-wrapper">
+        
+        <div class="data-table-wrapper" style="margin-top: 1rem;">
           <table class="data-table">
             <thead>
               <tr>
@@ -497,123 +363,151 @@
             </tbody>
           </table>
         </div>
-
       </div>
     </section>
 
-    <!-- TAB 6: SCRIPT VAULT & SOPS -->
-    <section id="tab_scripts" class="tab-content">
+    <!-- TAB 4: VAULT (Resources) -->
+    <section id="tab_vault" class="tab-content">
       <div class="tab-header-banner">
-        <span class="category-eyebrow blue">Conversion Assets</span>
-        <h2>Production Script Vault & SOPs</h2>
-        <p>1-Click clipboard copy for Upwork bidding, discovery calls, and client boundary protection.</p>
+        <span class="category-eyebrow violet">Resources</span>
+        <h2>Vault & Progression</h2>
       </div>
 
-      <div id="scriptVaultContainer">
-        <!-- Injected dynamically via JS -->
+      <!-- Mindset Laws Card -->
+      <div class="card list-group">
+        <div class="list-item">
+          <div class="list-item-header">
+            <span class="card-title" style="font-size:17px;">🛡️ The 3 Laws of TaskHelix</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:10px; font-size:14px; margin-top:8px;">
+            <div style="border-left:2px solid var(--color-emerald-active); padding-left:10px;">
+              <strong style="color:var(--color-emerald-active);">1. Law of the Arena:</strong> Knowledge without market risk is entertainment. Pitch today.
+            </div>
+            <div style="border-left:2px solid var(--color-signal-orange); padding-left:10px;">
+              <strong style="color:var(--color-signal-orange);">2. Law of Good Enough:</strong> An 80% template shipped beats 100% in staging.
+            </div>
+            <div style="border-left:2px solid var(--color-halo-blue); padding-left:10px;">
+              <strong style="color:var(--color-halo-blue);">3. Emotional Independence:</strong> We act with trembling hands; confidence follows.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 12-Week Roadmap -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🗺️ 12-Week Transformation Plan</span>
+        </div>
+        <div id="roadmapContainer">
+          <!-- Injected dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- Exposure Ladder -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🪜 Systematic Exposure Ladder</span>
+        </div>
+        <div id="exposureLadderContainer">
+          <!-- Injected dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- Script Vault -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">📜 Production Script Vault</span>
+        </div>
+        <div id="scriptVaultContainer">
+          <!-- Injected dynamically via JS -->
+        </div>
       </div>
     </section>
 
   </main>
 
-  <!-- Mobile Floating Bottom Dock (980px Radius) -->
+  <!-- Mobile Floating Bottom Dock (iOS UITabBar) -->
   <nav class="mobile-bottom-nav" role="navigation" aria-label="Mobile Navigation">
     <button class="mobile-nav-item active" data-tab="cockpit" onclick="switchTab('cockpit')">
       <span class="mobile-nav-icon">⚡</span>
-      <span>Cockpit</span>
+      <span>Focus</span>
     </button>
-    <button class="mobile-nav-item" data-tab="schedule" onclick="switchTab('schedule')">
-      <span class="mobile-nav-icon">🕒</span>
+    <button class="mobile-nav-item" data-tab="telemetry" onclick="switchTab('telemetry')">
+      <span class="mobile-nav-icon">📊</span>
       <span>Audit</span>
     </button>
-    <button class="mobile-nav-item" data-tab="roadmap" onclick="switchTab('roadmap')">
-      <span class="mobile-nav-icon">🗺️</span>
-      <span>Roadmap</span>
-    </button>
-    <button class="mobile-nav-item" data-tab="exposure" onclick="switchTab('exposure')">
-      <span class="mobile-nav-icon">🪜</span>
-      <span>Ladder</span>
-    </button>
     <button class="mobile-nav-item" data-tab="tracker" onclick="switchTab('tracker')">
-      <span class="mobile-nav-icon">📊</span>
-      <span>Tracker</span>
+      <span class="mobile-nav-icon">📝</span>
+      <span>Log</span>
     </button>
-    <button class="mobile-nav-item" data-tab="scripts" onclick="switchTab('scripts')">
-      <span class="mobile-nav-icon">📜</span>
-      <span>Scripts</span>
+    <button class="mobile-nav-item" data-tab="vault" onclick="switchTab('vault')">
+      <span class="mobile-nav-icon">🛡️</span>
+      <span>Vault</span>
     </button>
   </nav>
 
-  <!-- Deviation Logging Modal Action Sheet -->
+  <!-- Deviation Logging Modal Action Sheet (iOS Sheet) -->
   <div class="modal-overlay" id="deviationModal" role="dialog" aria-modal="true">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 style="color:var(--color-signal-orange); display:flex; align-items:center; gap:0.45rem; font-size:1.05rem;">
-          ⚠️ Log Schedule Deviation (Truth Audit)
+        <h3 style="color:var(--color-signal-orange); display:flex; align-items:center; gap:8px; font-size:17px;">
+          ⚠️ Log Schedule Deviation
         </h3>
-        <button class="btn btn-sm btn-secondary" onclick="closeDeviationModal()">Cancel [Esc]</button>
+        <button class="btn btn-sm btn-secondary" onclick="closeDeviationModal()">Cancel</button>
       </div>
-
-      <p style="font-size:0.85rem; margin-bottom:1rem;">
+      <p style="font-size:14px; margin-bottom:16px;">
         Zero shame. By recording what happened and why, you transform avoidance into valuable behavioral intelligence.
       </p>
-
       <input type="hidden" id="deviationBlockId" aria-label="Deviation Block ID">
-
-      <div style="margin-bottom:1.15rem;">
-        <label style="font-size:0.8rem; font-weight:600; color:var(--color-frost-white); display:block; margin-bottom:0.35rem;">
+      
+      <div style="margin-bottom:18px;">
+        <label style="font-size:14px; font-weight:600; color:var(--color-frost-white); display:block; margin-bottom:8px;">
           1. What were you doing instead?
         </label>
         <div class="chip-grid" id="deviationActivityChips">
           <!-- Injected via app.js -->
         </div>
       </div>
-
-      <div style="margin-bottom:1.15rem;">
-        <label style="font-size:0.8rem; font-weight:600; color:var(--color-frost-white); display:block; margin-bottom:0.35rem;">
+      
+      <div style="margin-bottom:18px;">
+        <label style="font-size:14px; font-weight:600; color:var(--color-frost-white); display:block; margin-bottom:8px;">
           2. What was the underlying emotional driver / why?
         </label>
         <div class="chip-grid" id="deviationDriverChips">
           <!-- Injected via app.js -->
         </div>
       </div>
-
-      <div style="margin-bottom:1.15rem;">
-        <label for="deviationNotesInput" style="font-size:0.8rem; font-weight:600; color:var(--color-frost-white); display:block; margin-bottom:0.35rem;">
+      
+      <div style="margin-bottom:18px;">
+        <label for="deviationNotesInput" style="font-size:14px; font-weight:600; color:var(--color-frost-white); display:block; margin-bottom:8px;">
           3. Optional Details / Specific Thought Pattern:
         </label>
         <input type="text" id="deviationNotesInput" aria-label="Optional details or thought pattern for schedule deviation" class="form-control" style="width:100%;" placeholder="e.g. Felt anxious; opened YouTube.">
       </div>
-
-      <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
-        <button class="btn btn-secondary btn-sm" onclick="closeDeviationModal()">Cancel</button>
-        <button class="btn btn-primary btn-sm" onclick="saveDeviationLog()">Save Deviation</button>
+      
+      <div style="display:flex; justify-content:flex-end; gap:8px;">
+        <button class="btn btn-primary" style="width:100%;" onclick="saveDeviationLog()">Save Deviation</button>
       </div>
     </div>
   </div>
 
-  <!-- Emergency Obstacle Modal Action Sheet -->
+  <!-- Emergency Obstacle Modal Action Sheet (iOS Sheet) -->
   <div class="modal-overlay" id="emergencyModal" role="dialog" aria-modal="true">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 style="color:#ff8b85; display:flex; align-items:center; gap:0.45rem; font-size:1.05rem;">
+        <h3 style="color:#ff8b85; display:flex; align-items:center; gap:8px; font-size:17px;">
           🚨 Emergency Obstacle Interventions
         </h3>
-        <button class="btn btn-sm btn-secondary" onclick="closeEmergencyModal()">Close [Esc]</button>
+        <button class="btn btn-sm btn-secondary" onclick="closeEmergencyModal()">Close</button>
       </div>
-
-      <p style="font-size:0.85rem; margin-bottom:1rem;">
+      <p style="font-size:14px; margin-bottom:16px;">
         When you experience acute cognitive freezing, shame, perfectionism, or relapse, execute the specific countermeasure below immediately.
       </p>
-
       <div id="obstacleList">
         <!-- Injected dynamically via JS -->
       </div>
     </div>
   </div>
-
-  <!-- Toast Notification Capsule -->
-  <div class="toast" id="appToast">Notification</div>
 
   <!-- Scripts -->
   <script src="data.js"></script>

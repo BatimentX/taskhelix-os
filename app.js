@@ -64,6 +64,80 @@ function saveState() {
 }
 
 // --------------------------------------------------------------------------
+// 0. iOS Notifications & Haptics Engine
+// --------------------------------------------------------------------------
+const Haptics = {
+  vibrate(pattern = [15]) {
+    if (navigator.vibrate) {
+      try { navigator.vibrate(pattern); } catch (e) {}
+    }
+  },
+  success() { this.vibrate([15, 30, 20]); },
+  error() { this.vibrate([20, 50, 20, 50, 20]); }
+};
+
+const IOSNotifications = {
+  queue: [],
+  isShowing: false,
+  
+  show(title, message, type = 'default') {
+    this.queue.push({ title, message, type });
+    if (!this.isShowing) this.processQueue();
+  },
+
+  processQueue() {
+    if (this.queue.length === 0) {
+      this.isShowing = false;
+      return;
+    }
+    
+    this.isShowing = true;
+    const notification = this.queue.shift();
+    const center = document.getElementById('ios-notification-center');
+    if (!center) return;
+
+    const el = document.createElement('div');
+    el.className = 'ios-notification';
+    
+    let icon = '🔔';
+    if (notification.type === 'success') icon = '✅';
+    if (notification.type === 'error') icon = '⚠️';
+    if (notification.type === 'timer') icon = '⏱️';
+
+    el.innerHTML = `
+      <div class="ios-notification-icon">${icon}</div>
+      <div class="ios-notification-content">
+        <div class="ios-notification-title">${notification.title}</div>
+        <div class="ios-notification-message">${notification.message}</div>
+      </div>
+    `;
+
+    center.appendChild(el);
+    Haptics.success();
+
+    // Trigger animation
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        el.classList.add('show');
+      });
+    });
+
+    setTimeout(() => {
+      el.classList.remove('show');
+      setTimeout(() => {
+        el.remove();
+        this.processQueue();
+      }, 400); // Wait for transition
+    }, 4000);
+  }
+};
+
+// Legacy shim
+function showToast(msg) {
+  IOSNotifications.show('TaskHelix', msg);
+}
+
+// --------------------------------------------------------------------------
 // 1. Web Audio API Synthesizer (Chimes + Pure Brown Noise Generator)
 // --------------------------------------------------------------------------
 const AudioFX = {
@@ -572,7 +646,7 @@ const Timers = {
     finishAll() {
       this.state = 'idle';
       AudioFX.playBell(528, 3.0);
-      showToast('Wim Hof 3 Rounds Completed! Physiological ignition active.');
+      IOSNotifications.show('Wim Hof Complete', 'Physiological ignition active.', 'success');
       
       const pacerCircle = document.getElementById('wimHofCircle');
       const pacerText = document.getElementById('wimHofCircleText');
@@ -583,7 +657,7 @@ const Timers = {
       if (pacerText) pacerText.textContent = 'Ready';
       if (statusText) statusText.textContent = '3 Rounds Complete';
       if (actionBtn) {
-        actionBtn.textContent = 'Start Wim Hof (3 Rounds)';
+        actionBtn.textContent = 'Start (3 Rounds)';
         actionBtn.className = 'btn btn-secondary btn-sm';
       }
     },
@@ -1413,36 +1487,50 @@ function updateTopMetrics() {
 }
 
 // --------------------------------------------------------------------------
-// 11. Toast & Tab Navigation
+// 11. Notifications & Haptics
 // --------------------------------------------------------------------------
+// (Haptics and IOSNotifications are already defined at the top of the file)
+
 function showToast(message) {
-  const toast = document.getElementById('appToast');
-  if (toast) {
-    toast.textContent = message;
-    toast.classList.add('show');
-    setTimeout(() => {
-      toast.classList.remove('show');
-    }, 3000);
-  }
+  IOSNotifications.show('TaskHelix', message);
 }
 
 function switchTab(tabId) {
+  Haptics.vibrate([10]);
+  const tabs = ['cockpit', 'telemetry', 'tracker', 'vault'];
+  
+  // Clean up tabId in case legacy tags are requested
+  if (tabId === 'schedule') tabId = 'telemetry';
+  if (tabId === 'roadmap' || tabId === 'exposure' || tabId === 'scripts') tabId = 'vault';
+
+  if (!tabs.includes(tabId)) return;
+
   appState.activeTab = tabId;
   saveState();
 
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.tab === tabId);
+  tabs.forEach(id => {
+    const content = document.getElementById('tab_' + id);
+    if (content) {
+      if (id === tabId) {
+        content.classList.add('active');
+      } else {
+        content.classList.remove('active');
+      }
+    }
   });
 
-  document.querySelectorAll('.mobile-nav-item').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.tab === tabId);
+  // Update nav highlights
+  document.querySelectorAll('.mobile-nav-item, .tab-btn').forEach(btn => {
+    if (btn.getAttribute('data-tab') === tabId || 
+        (tabId === 'telemetry' && btn.getAttribute('data-tab') === 'schedule') ||
+        (tabId === 'vault' && ['roadmap', 'exposure', 'scripts'].includes(btn.getAttribute('data-tab')))) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
   });
 
-  document.querySelectorAll('.tab-content').forEach(content => {
-    content.classList.toggle('active', content.id === `tab_${tabId}`);
-  });
-
-  if (tabId === 'schedule') {
+  if (tabId === 'telemetry') {
     renderScheduleAudit();
   }
   
