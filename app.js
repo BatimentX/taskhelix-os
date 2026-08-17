@@ -1,6 +1,6 @@
 /**
  * TASKHELIX EXECUTION OS — MAIN APPLICATION LOGIC
- * High-Performance Local-First Behavioral Operating System
+ * Reimagined Apple Obsidian Vitrine Edition
  */
 
 // State Management & LocalStorage Key
@@ -186,7 +186,7 @@ const FocusAudio = {
         const white = Math.random() * 2 - 1;
         output[i] = (lastOut + (0.02 * white)) / 1.02;
         lastOut = output[i];
-        output[i] *= 3.5; // Gain compensation
+        output[i] *= 3.5;
       }
 
       this.sourceNode = ctx.createBufferSource();
@@ -202,7 +202,7 @@ const FocusAudio = {
       this.sourceNode.start();
       this.isPlaying = true;
       this.render();
-      showToast('Brown Noise Focus Audio Active. Deep work mode locked.');
+      showToast('Brown Noise Active. Deep work state engaged.');
     } catch (e) {
       console.warn('Error starting brown noise', e);
     }
@@ -231,18 +231,18 @@ const FocusAudio = {
     const btn = document.getElementById('focusAudioToggleBtn');
     const statusText = document.getElementById('focusAudioStatus');
     if (btn) {
-      btn.textContent = this.isPlaying ? '⏹ Stop Brown Noise' : '▶ Start Brown Noise';
-      btn.className = this.isPlaying ? 'btn btn-warning btn-sm' : 'btn btn-primary btn-sm';
+      btn.textContent = this.isPlaying ? '⏹ Stop Noise' : '▶ Start Noise';
+      btn.className = this.isPlaying ? 'btn btn-secondary btn-sm' : 'btn btn-primary btn-sm';
     }
     if (statusText) {
-      statusText.textContent = this.isPlaying ? '● Playing (Continuous)' : 'Offline / Paused';
-      statusText.style.color = this.isPlaying ? 'var(--accent-emerald)' : 'var(--text-muted)';
+      statusText.textContent = this.isPlaying ? '● Playing' : 'Paused';
+      statusText.style.color = this.isPlaying ? 'var(--color-emerald-active)' : 'var(--color-platinum)';
     }
   }
 };
 
 // --------------------------------------------------------------------------
-// 2. Real-Time Chronometer Engine (15:00 - 07:30 Cycle)
+// 2. Real-Time Chronometer & 24-Hour Shift Ribbon
 // --------------------------------------------------------------------------
 function parseTimeToMinutes(timeStr) {
   const [h, m] = timeStr.split(':').map(Number);
@@ -312,20 +312,14 @@ function getCurrentShiftBlock(currentTime = new Date()) {
 function updateChronometer() {
   const now = new Date();
   const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-  const dateStr = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
   
   const liveClockEl = document.getElementById('liveClock');
   if (liveClockEl) liveClockEl.textContent = timeStr;
 
-  const liveDateEl = document.getElementById('liveDate');
-  if (liveDateEl) liveDateEl.textContent = dateStr;
-
   const currentInfo = getCurrentShiftBlock(now);
   const activeBlockNameEl = document.getElementById('activeBlockName');
-  const activeBlockTimeEl = document.getElementById('activeBlockTime');
   
   if (activeBlockNameEl) activeBlockNameEl.textContent = currentInfo.block.name;
-  if (activeBlockTimeEl) activeBlockTimeEl.textContent = `${currentInfo.block.start} - ${currentInfo.block.end}`;
 
   const heroBlockTag = document.getElementById('heroBlockTag');
   const heroCountdown = document.getElementById('heroCountdown');
@@ -342,10 +336,82 @@ function updateChronometer() {
   if (heroInstruction) heroInstruction.textContent = currentInfo.block.actionText;
   if (heroDescription) heroDescription.textContent = currentInfo.block.activities;
   if (heroProgressBar) heroProgressBar.style.width = `${currentInfo.progress}%`;
+
+  renderShiftRibbon(currentInfo.block.id);
+}
+
+function renderShiftRibbon(currentBlockId) {
+  const track = document.getElementById('shiftRibbonTrack');
+  if (!track) return;
+
+  const dayAudit = appState.scheduleAudits[currentAuditDateStr] || {};
+
+  track.innerHTML = TASKHELIX_DATA.scheduleBlocks.map(b => {
+    const isCurrent = b.id === currentBlockId;
+    const record = dayAudit[b.id];
+    const isFollowed = record?.status === 'followed';
+    const isDeviated = record?.status === 'deviated';
+
+    let tagColor = 'var(--color-platinum)';
+    let tagText = 'Pending';
+    if (isFollowed) {
+      tagColor = 'var(--color-emerald-active)';
+      tagText = 'Followed';
+    } else if (isDeviated) {
+      tagColor = 'var(--color-signal-orange)';
+      tagText = 'Deviated';
+    } else if (isCurrent) {
+      tagColor = 'var(--color-halo-blue)';
+      tagText = 'In Progress';
+    }
+
+    return `
+      <div class="ribbon-block-capsule ${isCurrent ? 'active-current' : ''}" onclick="switchTab('schedule'); openDeviationModal('${b.id}')">
+        <div class="ribbon-block-time">${b.start} - ${b.end}</div>
+        <div class="ribbon-block-title">${b.name}</div>
+        <span class="ribbon-block-tag" style="color:${tagColor};">${tagText}</span>
+      </div>
+    `;
+  }).join('');
 }
 
 // --------------------------------------------------------------------------
-// 3. Interactive Timers Engine (Wim Hof, 5-Min Meditation, 2-Min Reset)
+// 3. Apple Activity Rings Engine (Concentric SVG Gauges)
+// --------------------------------------------------------------------------
+function updateActivityRings(metrics, totalLoggedMinutes) {
+  // Outer Ring: Deep Work (Circumference = 2 * PI * 44 = 276.46)
+  const ringDeepWork = document.getElementById('ringDeepWork');
+  const legendDeepWork = document.getElementById('legendDeepWork');
+  const plannedDeepWorkMin = 160;
+  const executedDeepWorkMin = metrics.executedDeepWorkMin || totalLoggedMinutes || 0;
+  const deepWorkPct = Math.min(1, executedDeepWorkMin / plannedDeepWorkMin);
+  const deepWorkOffset = 276.46 * (1 - deepWorkPct);
+
+  if (ringDeepWork) ringDeepWork.style.strokeDashoffset = deepWorkOffset;
+  if (legendDeepWork) legendDeepWork.textContent = `${(executedDeepWorkMin / 60).toFixed(1)}h / 2.7h`;
+
+  // Middle Ring: Adherence % (Circumference = 2 * PI * 32 = 201.06)
+  const ringAdherence = document.getElementById('ringAdherence');
+  const legendAdherence = document.getElementById('legendAdherence');
+  const adherencePct = metrics.auditedCount > 0 ? metrics.adherencePercent / 100 : 0;
+  const adherenceOffset = 201.06 * (1 - adherencePct);
+
+  if (ringAdherence) ringAdherence.style.strokeDashoffset = adherenceOffset;
+  if (legendAdherence) legendAdherence.textContent = metrics.auditedCount > 0 ? `${metrics.adherencePercent}%` : '--%';
+
+  // Inner Ring: Avoidance Hours (Circumference = 2 * PI * 20 = 125.66)
+  const ringAvoidance = document.getElementById('ringAvoidance');
+  const legendAvoidance = document.getElementById('legendAvoidance');
+  const avoidedDeepWorkMin = metrics.avoidedDeepWorkMin || 0;
+  const avoidancePct = Math.min(1, avoidedDeepWorkMin / plannedDeepWorkMin);
+  const avoidanceOffset = 125.66 * (1 - avoidancePct);
+
+  if (ringAvoidance) ringAvoidance.style.strokeDashoffset = avoidanceOffset;
+  if (legendAvoidance) legendAvoidance.textContent = `${(avoidedDeepWorkMin / 60).toFixed(1)}h`;
+}
+
+// --------------------------------------------------------------------------
+// 4. Timers Engine (Wim Hof, 5-Min Meditation, 2-Min Reset)
 // --------------------------------------------------------------------------
 const Timers = {
   wimHof: {
@@ -375,7 +441,7 @@ const Timers = {
       const pacerText = document.getElementById('wimHofCircleText');
       const statusText = document.getElementById('wimHofStatus');
 
-      if (statusText) statusText.textContent = `Round ${this.round} of ${this.maxRounds}: Deep Breaths`;
+      if (statusText) statusText.textContent = `Round ${this.round} of ${this.maxRounds}: Inhale / Exhale`;
 
       let isInhale = true;
       this.timerId = setInterval(() => {
@@ -415,7 +481,7 @@ const Timers = {
       const statusText = document.getElementById('wimHofStatus');
 
       if (pacerCircle) pacerCircle.className = 'pacer-circle hold';
-      if (statusText) statusText.textContent = `Round ${this.round}: Retention (Hold breath on exhale)`;
+      if (statusText) statusText.textContent = `Round ${this.round}: Retention Hold`;
 
       this.timerId = setInterval(() => {
         this.retentionSeconds++;
@@ -428,7 +494,7 @@ const Timers = {
 
       const actionBtn = document.getElementById('wimHofActionBtn');
       if (actionBtn) {
-        actionBtn.textContent = 'Inhale & Hold (Finish Retention)';
+        actionBtn.textContent = 'Inhale & Hold (15s)';
         actionBtn.className = 'btn btn-primary btn-sm';
       }
     },
@@ -510,7 +576,6 @@ const Timers = {
     }
   },
 
-  // 5-Minute Meditation Timer
   meditation: {
     totalSeconds: 300,
     remainingSeconds: 300,
@@ -570,7 +635,7 @@ const Timers = {
     finish() {
       this.pause();
       AudioFX.playBell(528, 4.0);
-      showToast('Meditation Completed! Parasympathetic focus locked in.');
+      showToast('Meditation Completed! Focus locked.');
       this.remainingSeconds = 300;
       this.render();
       const btn = document.getElementById('meditationToggleBtn');
@@ -587,7 +652,6 @@ const Timers = {
     }
   },
 
-  // 2-Minute Acute Freeze Reset Timer
   freezeReset: {
     totalSeconds: 120,
     remainingSeconds: 120,
@@ -618,7 +682,7 @@ const Timers = {
       clearInterval(this.timerId);
       this.isRunning = false;
       AudioFX.playBell(528, 2.5);
-      showToast('2-Minute Reset Finished. Execute ONLY the micro-sentence.');
+      showToast('2-Minute Reset Finished. Execute ONLY 1 micro-sentence.');
       this.remainingSeconds = 120;
       this.render();
       const btn = document.getElementById('freezeResetBtn');
@@ -637,9 +701,8 @@ const Timers = {
 };
 
 // --------------------------------------------------------------------------
-// 4. SCHEDULE REALITY AUDIT (PLANNED VS ACTUAL ENGINE)
+// 5. SCHEDULE REALITY AUDIT (PLANNED VS ACTUAL ENGINE)
 // --------------------------------------------------------------------------
-
 function changeAuditDate(deltaDays) {
   const [y, m, d] = currentAuditDateStr.split('-').map(Number);
   const dateObj = new Date(y, m - 1, d);
@@ -674,7 +737,7 @@ function setBlockFollowed(blockId) {
   saveState();
   renderScheduleAudit();
   updateTopMetrics();
-  showToast('Block marked as Followed. Consistency points logged!');
+  showToast('Block marked as Followed. Consistency logged!');
 }
 
 function openDeviationModal(blockId) {
@@ -854,7 +917,7 @@ function renderScheduleAudit() {
   const scoreBadge = document.getElementById('auditAdherenceScoreBadge');
   if (scoreBadge) {
     scoreBadge.textContent = metrics.auditedCount > 0 ? `Adherence: ${metrics.adherencePercent}% (${metrics.followedCount}/${metrics.auditedCount} blocks)` : 'Adherence: Unaudited';
-    scoreBadge.style.color = metrics.adherencePercent >= 80 ? 'var(--accent-emerald)' : metrics.adherencePercent >= 50 ? 'var(--accent-amber)' : 'var(--text-muted)';
+    scoreBadge.style.color = metrics.adherencePercent >= 80 ? 'var(--color-emerald-active)' : metrics.adherencePercent >= 50 ? 'var(--color-signal-orange)' : 'var(--color-platinum)';
   }
 
   const deepWorkText = document.getElementById('auditDeepWorkSummaryText');
@@ -898,7 +961,7 @@ function renderScheduleAudit() {
     let rowClass = '';
 
     if (isFollowed) {
-      statusTag = '<span class="audit-status-tag tag-followed">✅ Followed</span>';
+      statusTag = '<span class="audit-status-tag tag-followed">✓ Followed</span>';
       rowClass = 'status-followed';
     } else if (isDeviated) {
       statusTag = '<span class="audit-status-tag tag-deviated">⚠️ Deviated</span>';
@@ -910,7 +973,7 @@ function renderScheduleAudit() {
       deviationDetailHtml = `
         <div class="deviation-record-box">
           <strong>Did Instead:</strong> ${record.activity} &nbsp;|&nbsp; 
-          <strong>Why / Driver:</strong> ${record.driver}
+          <strong>Why:</strong> ${record.driver}
           ${record.notes ? `<br><em>Notes:</em> ${record.notes}` : ''}
         </div>
       `;
@@ -931,14 +994,14 @@ function renderScheduleAudit() {
         </div>
 
         <div class="audit-actions-col">
-          <button class="btn btn-sm ${isFollowed ? 'btn-primary' : 'btn-success'}" onclick="setBlockFollowed('${block.id}')" title="Mark as followed">
-            ${isFollowed ? '✓ Done' : '✅ Followed'}
+          <button class="btn btn-sm ${isFollowed ? 'btn-primary' : 'btn-secondary'}" onclick="setBlockFollowed('${block.id}')" title="Mark as followed">
+            ${isFollowed ? '✓ Done' : 'Followed'}
           </button>
-          <button class="btn btn-sm ${isDeviated ? 'btn-warning' : 'btn-secondary'}" onclick="openDeviationModal('${block.id}')" title="Log what you did instead">
-            ${isDeviated ? '✏️ Edit Deviation' : '⚠️ Deviated'}
+          <button class="btn btn-sm btn-secondary" onclick="openDeviationModal('${block.id}')" title="Log deviation">
+            ${isDeviated ? 'Edit' : 'Deviated'}
           </button>
           ${(isFollowed || isDeviated) ? `
-            <button class="btn btn-sm btn-secondary" onclick="resetBlockAudit('${block.id}')" title="Reset block">
+            <button class="btn btn-sm btn-secondary" onclick="resetBlockAudit('${block.id}')" title="Reset">
               ↺
             </button>
           ` : ''}
@@ -949,7 +1012,7 @@ function renderScheduleAudit() {
 }
 
 // --------------------------------------------------------------------------
-// 5. Renderers: 12-Week Roadmap & Exposure Ladder
+// 6. Renderers: 12-Week Roadmap & Exposure Ladder
 // --------------------------------------------------------------------------
 function renderRoadmap() {
   const container = document.getElementById('roadmapContainer');
@@ -976,10 +1039,10 @@ function renderRoadmap() {
         </div>
       </div>
       <div style="display:flex; align-items:center; gap: 0.75rem;">
-        <span class="discomfort-tag mono" style="background:rgba(16,185,129,0.1); color:var(--accent-emerald); border-color:rgba(16,185,129,0.3)">
+        <span class="discomfort-tag mono">
           Goal: ${w.successMetrics.split(';')[0]}
         </span>
-        <span class="mono" style="font-size:0.8rem; color:var(--text-muted);">${isWeekExpanded ? '▲' : '▼'}</span>
+        <span class="mono" style="font-size:0.8rem; color:var(--color-platinum);">${isWeekExpanded ? '▲' : '▼'}</span>
       </div>
     `;
 
@@ -1019,38 +1082,38 @@ function renderRoadmap() {
     const expDone = expChecked ? 'done' : '';
 
     body.innerHTML = `
-      <div style="margin-bottom: 1rem;">
-        <h4 style="color:var(--accent-emerald); margin-bottom: 0.25rem;">Primary Objective:</h4>
-        <p style="color:var(--text-secondary); font-size:0.9rem;">${w.objective}</p>
+      <div style="margin-bottom: 1.1rem;">
+        <span class="category-eyebrow emerald">Primary Objective</span>
+        <p style="color:var(--color-frost-white); font-size:0.95rem;">${w.objective}</p>
       </div>
 
-      <div class="grid-2" style="margin-bottom: 1rem;">
-        <div class="card" style="background:var(--bg-core);">
-          <h4 style="margin-bottom: 0.5rem; color:var(--text-primary);">Daily Non-Negotiables</h4>
+      <div class="grid-2" style="margin-bottom: 1.1rem;">
+        <div class="card" style="background:var(--color-carbon);">
+          <h4 style="margin-bottom: 0.5rem; color:var(--color-frost-white);">Daily Non-Negotiables</h4>
           ${dailyCheckboxes}
         </div>
-        <div class="card" style="background:var(--bg-core);">
-          <h4 style="margin-bottom: 0.5rem; color:var(--text-primary);">Weekly Milestone Deliverables</h4>
+        <div class="card" style="background:var(--color-carbon);">
+          <h4 style="margin-bottom: 0.5rem; color:var(--color-frost-white);">Weekly Milestone Deliverables</h4>
           ${weeklyCheckboxes}
         </div>
       </div>
 
-      <div class="card" style="background:rgba(245, 158, 11, 0.05); border-color: rgba(245, 158, 11, 0.3); margin-bottom: 1rem;">
-        <h4 style="color:var(--accent-amber); margin-bottom: 0.4rem;">Weekly Exposure Challenge</h4>
-        <div class="check-item">
+      <div class="card" style="background:rgba(245, 105, 0, 0.05); border-color: rgba(245, 105, 0, 0.25); margin-bottom: 1.1rem;">
+        <span class="category-eyebrow" style="color:var(--color-signal-orange);">Weekly Exposure Challenge</span>
+        <div class="check-item" style="border:none;">
           <div class="custom-checkbox ${expChecked}" onclick="toggleTask('${expKey}')">
             ${expChecked ? '✓' : ''}
           </div>
-          <span class="check-text ${expDone}"><strong>${w.exposureChallenge}</strong></span>
+          <span class="check-text ${expDone}"><strong style="color:var(--color-frost-white);">${w.exposureChallenge}</strong></span>
         </div>
       </div>
 
       <div class="grid-2">
-        <div style="font-size:0.825rem; color:var(--text-secondary);">
-          <strong style="color:var(--text-primary);">Success Criteria:</strong> ${w.successMetrics}
+        <div style="font-size:0.825rem; color:var(--color-platinum);">
+          <strong style="color:var(--color-frost-white);">Success Criteria:</strong> ${w.successMetrics}
         </div>
-        <div style="font-size:0.825rem; color:var(--text-secondary);">
-          <strong style="color:var(--text-primary);">Sunday Review Process:</strong> ${w.reviewProcess}
+        <div style="font-size:0.825rem; color:var(--color-platinum);">
+          <strong style="color:var(--color-frost-white);">Sunday Review Process:</strong> ${w.reviewProcess}
         </div>
       </div>
     `;
@@ -1116,7 +1179,7 @@ function toggleLadder(rungNum) {
 }
 
 // --------------------------------------------------------------------------
-// 6. Script Clipboard Vault Renderer
+// 7. Script Vault & SOPs
 // --------------------------------------------------------------------------
 function renderScriptVault() {
   const container = document.getElementById('scriptVaultContainer');
@@ -1131,8 +1194,8 @@ function renderScriptVault() {
     el.innerHTML = `
       <div class="script-header">
         <div>
-          <h4 style="color:var(--text-primary); font-size:0.95rem;">${s.title}</h4>
-          <span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">${s.category}</span>
+          <h4 style="color:var(--color-frost-white); font-size:1rem;">${s.title}</h4>
+          <span style="font-size:0.75rem; color:var(--color-platinum); text-transform:uppercase; font-weight:700;">${s.category}</span>
         </div>
         <button class="btn btn-sm btn-secondary" onclick="copyScriptText('${s.id}')">
           📋 Copy Script
@@ -1156,7 +1219,7 @@ function copyScriptText(scriptId) {
 }
 
 // --------------------------------------------------------------------------
-// 7. Emergency Obstacle Drawer
+// 8. Emergency Obstacle Drawer
 // --------------------------------------------------------------------------
 function renderObstacleDrawer() {
   const container = document.getElementById('obstacleList');
@@ -1188,7 +1251,7 @@ function closeEmergencyModal() {
 }
 
 // --------------------------------------------------------------------------
-// 8. Behavioral Activation Tracker Engine
+// 9. Behavioral Activation Tracker
 // --------------------------------------------------------------------------
 function initTrackerForm() {
   const moodBeforeInput = document.getElementById('moodBefore');
@@ -1253,7 +1316,7 @@ function renderTrackerTable() {
   if (appState.trackerLogs.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="7" style="text-align:center; color:var(--text-muted); padding: 2rem;">
+        <td colspan="7" style="text-align:center; color:var(--color-platinum); padding: 2rem;">
           No behavioral actions logged yet. Execute an outreach block and log your first entry above.
         </td>
       </tr>
@@ -1268,8 +1331,8 @@ function renderTrackerTable() {
 
     return `
       <tr>
-        <td class="mono" style="color:var(--text-muted);">${item.date} ${item.time}</td>
-        <td><strong>${item.action}</strong></td>
+        <td class="mono" style="color:var(--color-platinum);">${item.date} ${item.time}</td>
+        <td><strong style="color:var(--color-frost-white);">${item.action}</strong></td>
         <td class="mono">${item.duration}m</td>
         <td class="mono">${item.moodBefore}/5</td>
         <td class="mono">${item.moodAfter}/5</td>
@@ -1278,9 +1341,9 @@ function renderTrackerTable() {
             ${deltaSign} Lift
           </span>
         </td>
-        <td style="color:var(--text-secondary); font-size:0.8rem;">
+        <td style="color:var(--color-platinum); font-size:0.8rem;">
           ${item.notes || '-'}
-          <button class="btn btn-sm" style="color:var(--accent-crimson); margin-left:0.5rem;" onclick="deleteLogEntry(${item.id})">×</button>
+          <button class="btn btn-sm" style="color:var(--color-crimson-alert); margin-left:0.5rem;" onclick="deleteLogEntry(${item.id})">×</button>
         </td>
       </tr>
     `;
@@ -1288,7 +1351,7 @@ function renderTrackerTable() {
 }
 
 // --------------------------------------------------------------------------
-// 9. Metrics & Telemetry Calculation
+// 10. Metrics & Telemetry Calculation
 // --------------------------------------------------------------------------
 function updateTopMetrics() {
   const totalLadders = Object.values(appState.completedLadders).filter(Boolean).length;
@@ -1301,7 +1364,7 @@ function updateTopMetrics() {
   const statAvoidanceHours = document.getElementById('statAvoidanceHours');
   const statLaddersConquered = document.getElementById('statLaddersConquered');
 
-  if (statLoggedHours) statLoggedHours.textContent = `${(totalLoggedMinutes / 60).toFixed(1)} hrs`;
+  if (statLoggedHours) statLoggedHours.textContent = `${((todayMetrics.executedDeepWorkMin || totalLoggedMinutes) / 60).toFixed(1)} hrs`;
   if (statTodayAdherence) {
     statTodayAdherence.textContent = todayMetrics.auditedCount > 0 ? `${todayMetrics.adherencePercent}%` : '--%';
   }
@@ -1309,10 +1372,12 @@ function updateTopMetrics() {
     statAvoidanceHours.textContent = `${(todayMetrics.avoidedDeepWorkMin / 60).toFixed(1)} hrs`;
   }
   if (statLaddersConquered) statLaddersConquered.textContent = `${totalLadders} / 10`;
+
+  updateActivityRings(todayMetrics, totalLoggedMinutes);
 }
 
 // --------------------------------------------------------------------------
-// 10. Toast Notification Helper
+// 11. Toast & Tab Navigation
 // --------------------------------------------------------------------------
 function showToast(message) {
   const toast = document.getElementById('appToast');
@@ -1325,9 +1390,6 @@ function showToast(message) {
   }
 }
 
-// --------------------------------------------------------------------------
-// 11. Tab Navigation
-// --------------------------------------------------------------------------
 function switchTab(tabId) {
   appState.activeTab = tabId;
   saveState();
@@ -1348,12 +1410,11 @@ function switchTab(tabId) {
     renderScheduleAudit();
   }
   
-  // Smoothly scroll to top on tab switch
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
 // --------------------------------------------------------------------------
-// 12. Data Export & Import (Backup System)
+// 12. Data Backup & Restore
 // --------------------------------------------------------------------------
 function exportBackupData() {
   const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
@@ -1391,10 +1452,9 @@ function importBackupData(event) {
 }
 
 // --------------------------------------------------------------------------
-// 13. Service Worker Registration & App Lifecycle
+// 13. App Lifecycle Initialization
 // --------------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
-  // Register Service Worker for PWA / Offline Caching
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').then(() => {
       console.log('TaskHelix Service Worker registered.');
@@ -1448,7 +1508,6 @@ document.addEventListener('DOMContentLoaded', () => {
     freezeResetBtn.onclick = () => Timers.freezeReset.start();
   }
 
-  // Focus Audio Hook
   const focusAudioBtn = document.getElementById('focusAudioToggleBtn');
   if (focusAudioBtn) {
     focusAudioBtn.onclick = () => FocusAudio.toggle();

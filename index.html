@@ -27,7 +27,7 @@
 </head>
 <body>
 
-  <!-- Top Showcase Navigation & Chronometer Complication -->
+  <!-- Top Showcase Header -->
   <header class="app-header">
     <div class="header-container">
       
@@ -81,23 +81,77 @@
   <!-- Main Content Showcase Stage -->
   <main class="main-wrapper">
 
-    <!-- Top Telemetry Complications (Apple Watch Widget Strip) -->
-    <section class="grid-4" style="margin-bottom: 1.5rem;">
-      <div class="metric-box">
-        <span class="metric-label">Deep Work</span>
-        <span class="metric-val emerald mono" id="statDeepWorkHours">0.0 hrs</span>
+    <!-- Top Telemetry Stage: Apple Activity Rings + Complication Widgets -->
+    <section class="telemetry-stage-wrapper">
+      
+      <!-- Apple Activity Rings Widget -->
+      <div class="activity-rings-card">
+        <div class="rings-svg-container">
+          <svg width="104" height="104" viewBox="0 0 104 104">
+            <!-- Outer Ring: Deep Work (Green) -->
+            <circle class="ring-bg ring-emerald-bg" cx="52" cy="52" r="44"></circle>
+            <circle class="ring-fill ring-emerald-fill" id="ringDeepWork" cx="52" cy="52" r="44" stroke-dasharray="276.46" stroke-dashoffset="276.46"></circle>
+            
+            <!-- Middle Ring: Adherence (Blue) -->
+            <circle class="ring-bg ring-blue-bg" cx="52" cy="52" r="32"></circle>
+            <circle class="ring-fill ring-blue-fill" id="ringAdherence" cx="52" cy="52" r="32" stroke-dasharray="201.06" stroke-dashoffset="201.06"></circle>
+            
+            <!-- Inner Ring: Avoidance (Orange) -->
+            <circle class="ring-bg ring-orange-bg" cx="52" cy="52" r="20"></circle>
+            <circle class="ring-fill ring-orange-fill" id="ringAvoidance" cx="52" cy="52" r="20" stroke-dasharray="125.66" stroke-dashoffset="125.66"></circle>
+          </svg>
+        </div>
+
+        <div class="rings-legend">
+          <div class="ring-legend-item">
+            <span class="ring-legend-dot" style="background-color:var(--color-emerald-active);"></span>
+            <span>Deep Work: <strong id="legendDeepWork" class="mono" style="color:var(--color-frost-white);">0.0h</strong></span>
+          </div>
+          <div class="ring-legend-item">
+            <span class="ring-legend-dot" style="background-color:var(--color-halo-blue);"></span>
+            <span>Adherence: <strong id="legendAdherence" class="mono" style="color:var(--color-frost-white);">0%</strong></span>
+          </div>
+          <div class="ring-legend-item">
+            <span class="ring-legend-dot" style="background-color:var(--color-signal-orange);"></span>
+            <span>Avoidance: <strong id="legendAvoidance" class="mono" style="color:var(--color-frost-white);">0.0h</strong></span>
+          </div>
+        </div>
       </div>
-      <div class="metric-box">
-        <span class="metric-label">Schedule Adherence</span>
-        <span class="metric-val azure mono" id="statTodayAdherence">--%</span>
+
+      <!-- Complication Widgets Grid -->
+      <div class="grid-4" style="flex:1;">
+        <div class="metric-box">
+          <span class="metric-label">Deep Work</span>
+          <span class="metric-val emerald mono" id="statDeepWorkHours">0.0 hrs</span>
+        </div>
+        <div class="metric-box">
+          <span class="metric-label">Adherence</span>
+          <span class="metric-val azure mono" id="statTodayAdherence">--%</span>
+        </div>
+        <div class="metric-box">
+          <span class="metric-label">Avoidance</span>
+          <span class="metric-val crimson mono" id="statAvoidanceHours">0.0 hrs</span>
+        </div>
+        <div class="metric-box">
+          <span class="metric-label">Exposures</span>
+          <span class="metric-val amber mono" id="statLaddersConquered">0 / 10</span>
+        </div>
       </div>
-      <div class="metric-box">
-        <span class="metric-label">Avoidance Today</span>
-        <span class="metric-val crimson mono" id="statAvoidanceHours">0.0 hrs</span>
+
+    </section>
+
+    <!-- 24-Hour Shift Ribbon (Visual Timeline) -->
+    <section class="shift-ribbon-card">
+      <div class="shift-ribbon-header">
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <span class="category-eyebrow emerald" style="margin-bottom:0;">Live Shift Ribbon</span>
+          <span style="font-size:0.75rem; color:var(--color-platinum);">· 24-Hour Circadian Flow</span>
+        </div>
+        <span class="mono" style="font-size:0.75rem; color:var(--color-halo-blue);" id="ribbonActiveBlockTag">Live Tracking</span>
       </div>
-      <div class="metric-box">
-        <span class="metric-label">Exposures Conquered</span>
-        <span class="metric-val amber mono" id="statLaddersConquered">0 / 10</span>
+
+      <div class="ribbon-scroll-track" id="shiftRibbonTrack">
+        <!-- Injected dynamically via JS -->
       </div>
     </section>
 
