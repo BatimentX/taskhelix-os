@@ -309,17 +309,23 @@ function getCurrentShiftBlock(currentTime = new Date()) {
   };
 }
 
+let lastRenderedBlockId = null;
+
 function updateChronometer() {
   const now = new Date();
   const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
   
   const liveClockEl = document.getElementById('liveClock');
-  if (liveClockEl) liveClockEl.textContent = timeStr;
+  if (liveClockEl && liveClockEl.textContent !== timeStr) {
+    liveClockEl.textContent = timeStr;
+  }
 
   const currentInfo = getCurrentShiftBlock(now);
   const activeBlockNameEl = document.getElementById('activeBlockName');
   
-  if (activeBlockNameEl) activeBlockNameEl.textContent = currentInfo.block.name;
+  if (activeBlockNameEl && activeBlockNameEl.textContent !== currentInfo.block.name) {
+    activeBlockNameEl.textContent = currentInfo.block.name;
+  }
 
   const heroBlockTag = document.getElementById('heroBlockTag');
   const heroCountdown = document.getElementById('heroCountdown');
@@ -327,17 +333,28 @@ function updateChronometer() {
   const heroDescription = document.getElementById('heroDescription');
   const heroProgressBar = document.getElementById('heroProgressBar');
 
-  if (heroBlockTag) heroBlockTag.textContent = currentInfo.block.name;
+  if (heroBlockTag && heroBlockTag.textContent !== currentInfo.block.name) {
+    heroBlockTag.textContent = currentInfo.block.name;
+  }
   if (heroCountdown) {
     const remM = String(currentInfo.remainingMinutes).padStart(2, '0');
     const remS = String(currentInfo.remainingSeconds).padStart(2, '0');
     heroCountdown.textContent = `${remM}:${remS} remaining`;
   }
-  if (heroInstruction) heroInstruction.textContent = currentInfo.block.actionText;
-  if (heroDescription) heroDescription.textContent = currentInfo.block.activities;
-  if (heroProgressBar) heroProgressBar.style.width = `${currentInfo.progress}%`;
+  if (heroInstruction && heroInstruction.textContent !== currentInfo.block.actionText) {
+    heroInstruction.textContent = currentInfo.block.actionText;
+  }
+  if (heroDescription && heroDescription.textContent !== currentInfo.block.activities) {
+    heroDescription.textContent = currentInfo.block.activities;
+  }
+  if (heroProgressBar) {
+    heroProgressBar.style.width = `${currentInfo.progress}%`;
+  }
 
-  renderShiftRibbon(currentInfo.block.id);
+  if (lastRenderedBlockId !== currentInfo.block.id) {
+    lastRenderedBlockId = currentInfo.block.id;
+    renderShiftRibbon(currentInfo.block.id);
+  }
 }
 
 function renderShiftRibbon(currentBlockId) {

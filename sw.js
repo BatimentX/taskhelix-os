@@ -1,6 +1,6 @@
-// TaskHelix Service Worker — Offline Caching Engine
-const CACHE_NAME = 'taskhelix-cache-v6';
-const ASSETS_TO_CACHE = [
+// TaskHelix Service Worker — High-Performance Stale-While-Revalidate Engine
+const CACHE_NAME = 'taskhelix-cache-v7';
+const CORE_ASSETS = [
   './',
   './index.html',
   './styles.css',
@@ -12,7 +12,7 @@ const ASSETS_TO_CACHE = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
+      return cache.addAll(CORE_ASSETS);
     }).then(() => self.skipWaiting())
   );
 });
@@ -32,10 +32,22 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
+
+  // Stale-While-Revalidate strategy for core assets
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      return cachedResponse || fetch(event.request).catch(() => {
-        return caches.match('./index.html');
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.match(event.request).then((cachedResponse) => {
+        const fetchPromise = fetch(event.request).then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            cache.put(event.request, networkResponse.clone());
+          }
+          return networkResponse;
+        }).catch(() => {
+          return cachedResponse || caches.match('./index.html');
+        });
+
+        return cachedResponse || fetchPromise;
       });
     })
   );
